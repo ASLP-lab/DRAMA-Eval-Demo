@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DRAMA-Eval</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+    <!-- 引入 Nunito (标题) 和 Inter (正文) 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <header class="top-nav">
+        <img src="assets/logo.png" alt="Logo" style="height: 40px; vertical-align: middle; margin-right: 10px;"><div class="logo" style="display:inline-block;">DRAMA-Eval</div>
+        <nav class="nav-links">
+            <a href="#overview">Overview</a>
+            <a href="#radar">Radar Chart</a>
+            <a href="#leaderboard">Leaderboard</a>
+            <a href="#case">Case Study</a>
+        </nav>
+    </header>
+
+    <div class="layout-container">
+        <!-- 左侧悬浮侧边栏 -->
+        <aside class="left-sidebar">
+            <div class="sidebar-inner">
+                <p class="sidebar-title">ON THIS PAGE</p>
+                <nav class="sidebar-nav">
+                    <a href="#overview" class="active">Overview</a>
+                    <a href="#radar">Radar Chart</a>
+                    <a href="#leaderboard">Leaderboard</a>
+                    <a href="#case">Case Study</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 右侧主内容区 -->
+        <main class="main-content">
+            <section id="overview" class="section">
+                <h1 class="page-title">DRAMA-Eval: A Benchmark for Context-Aware, Multi-Turn, Multi-Speaker Speech Generation</h1>
+                
+                <div class="abstract-box">
+                    <div style="display: flex; gap: 12px; margin-bottom: 25px; flex-wrap: wrap;">
+                        <a href="#" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #1e293b; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">📄 Paper (Coming Soon)</a>
+                        <a href="https://github.com/ASLP-lab/DRAMA-Eval" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #24292e; color: #fff; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">💻 GitHub</a>
+                        <a href="https://huggingface.co/datasets/ASLP-lab/DRAMA-Eval" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #ffbd00; color: #000; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">🤗 Dataset</a>
+                        <a href="https://huggingface.co/datasets/ASLP-lab/DRAMA-Eval-Results" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; background: #ffbd00; color: #000; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1">🤗 Results</a>
+                    </div>
+                    <h2>Overview</h2>
+                    <p>We introduce <strong>DRAMA-Eval</strong>, a comprehensive benchmark for evaluating <strong>context-aware, multi-turn, and multi-speaker speech generation</strong>. It utilizes structured script contexts and offers a holistic evaluation framework covering objective, acoustic, local, and global aspects.</p>
+                    
+                    <div class="contribution-list">
+                        <h4>Key Contributions</h4>
+                        <ul>
+                            <li><strong>Comprehensive Dataset</strong>: A <strong>12-hour</strong> bilingual (ZH-EN) test set of manually corrected real-world scripts paired with ground-truth audio.</li>
+                            <li><strong>Holistic Protocol</strong>: A unified protocol spanning objective metrics (WER/CER, Spk-Sim) and subjective LLM-as-a-Judge assessments (Local B1-B3, Global C1-C3).</li>
+                            <li><strong>Systematic Benchmarking</strong>: Evaluates diverse models, revealing critical weaknesses in long-range speaker consistency and implicit instruction following.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="radar" class="radar-inline-section" style="margin-bottom: 40px; padding-top: 10px;">
+                <h1 class="page-title">Radar Chart</h1>
+                
+                <div class="radar-desc-box">
+                    <h3>Multi-Dimensional Capability Comparison</h3>
+                    <p>This radar chart visualizes the performance across objective (A1, A2), local (B1-B3), and global (C1-C3) metrics. The A1 WER/CER is inverted (10 - WER) so that a larger area always indicates better overall capability. Select specific models below to compare their strengths and weaknesses side-by-side.</p>
+                </div>
+
+                <div class="radar-controls">
+                    <select id="radar-lang" onchange="renderRadar()">
+                        <option value="zh">Chinese (ZH)</option>
+                        <option value="en">English (EN)</option>
+                    </select>
+                    <div style="margin-bottom:10px;"><button onclick="toggleAllRadar()" style="padding:6px 12px; cursor:pointer; border-radius:6px; border:1px solid #cbd5e1; background:#fff; font-weight:600; color:var(--primary);">Toggle All Models</button></div>
+<div id="radar-model-checkboxes" class="checkbox-group"></div>
+                </div>
+                <div id="radar-chart" style="width: 100%; height: 600px; min-height: 600px; margin-top:20px; display: block;"></div>
+            </div>
+
+                <h2 class="page-subtitle" style="margin-top: 60px; margin-bottom: 30px; font-family: 'Nunito', sans-serif; font-size: 1.8rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; color: #1e293b;">Dataset Construction & Analysis</h2>
+            <div class="figures-container">
+                    <div class="fig-box">
+                        <div class="fig-desc">
+                            <h3>Figure 1: Dataset Construction Pipeline</h3>
+                            <p>Our pipeline begins by sourcing diverse real-world audio (podcasts, films, TV). We use Gemini 2.5 Pro for segment-level attribute annotation, followed by DeepSeek-v4.1-Flash to clean and format the script. Finally, human reviewers ensure format compliance and description quality, resulting in a structured test set with scene context, character profiles, and turn-level instructions.</p>
+                        </div>
+                        <img src="assets/pipeline.png" alt="Pipeline" onerror="this.src='https://via.placeholder.com/800x400?text=Figure+1+(Save+as+pipeline.png)'">
+                    </div>
+                    
+                    <div class="fig-box">
+                        <div class="fig-desc">
+                            <h3>Figure 2: Dataset Statistics</h3>
+                            <p>Distribution of audio sources, scene categories, speaker counts, and turn counts across our dataset. The data covers a wide variety of acoustic and expressive conditions, ensuring robust evaluation of context-aware capabilities.</p>
+                        </div>
+                        <img src="assets/overview.png" alt="Overview" onerror="this.src='https://via.placeholder.com/800x400?text=Figure+2+(save+as+overview.png)'">
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 15px; font-family: 'Nunito', sans-serif; font-size: 1.4rem; color: #1e293b;">Dataset Structure (JSON Fields)</h3>
+                <p class="desc-text">The data is hierarchically structured to support context-aware generation. Below are the detailed field descriptions:</p>
+                
+                <div class="field-descriptions">
+                    <ul>
+                        <li><code>utt</code>: The unique identifier for the sample.</li>
+                        <li><code>language</code>: The language of the sample (e.g., "English", "中文").</li>
+                        <li><code>context_background</code>: The <strong>Global Context</strong> describing the overall scene (e.g., location, atmosphere).</li>
+                        <li><code>character</code>: A dictionary of <strong>Character Profiles</strong>. Each contains <code>text_info</code> (voice traits) and <code>wav_path</code> (reference audio).</li>
+                        <li><code>content</code>: A list of dialogue turns. Each turn includes:
+                            <ul>
+                                <li><code>turn_num</code>: Turn index.</li>
+                                <li><code>speaker_info</code>: The speaker of this turn.</li>
+                                <li><code>text</code>: The target text to synthesize.</li>
+                                <li><code>context</code>: The <strong>Local Context / Stage Direction</strong> describing emotion, pace, and action.</li>
+                                <li><code>audio_assets</code>: Timestamps for the Ground Truth audio slice.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <p class="desc-text">Here is a concrete English example demonstrating the JSON structure:</p>
+                <div class="json-container">
+<pre><code>{
+  "utt": "0005",
+  "language": "English",
+  "eval_type": "Normal",
+  "context_background": "In a serious, quiet BBC news studio, the environment is dry and echo-free. Two journalists are conducting an in-depth analysis and interview regarding the lobbying scandal in British politics.",
+  "character": {
+    "Male_Reporter_Young": {
+      "text_info": "Young male, clear voice, speaks standard British English, often with thoughtful pauses and repetitions when speaking.",
+      "wav_path": "/path/to/prompt_audio.wav"
+    }
+  },
+  "content": [
+    {
+      "turn_num": 1,
+      "text": "had been passed from Mandelson to Epstein while he was in Gordon Brown's government.",
+      "speaker_info": {"speaker_name": "Male_Reporter_Young"},
+      "context": "He took a deep breath and added key information in an objective, matter-of-fact tone, articulating clearly with a smooth rhythm.",
+      "audio_assets": {"start_time_ms": 0, "end_time_ms": 5210}
+    }
+  ]
+}</code></pre>
+                </div>
+            </section>
+
+            <section id="leaderboard" class="section">
+                <h1 class="page-title">Leaderboard</h1>
+                <div class="desc-text" style="margin-bottom: 30px;">
+                    <p style="margin-bottom: 15px;"><strong>Evaluation Framework:</strong> We construct a comprehensive evaluation system combining objective metrics and LLM-as-a-Judge (LALM) assessments. Objective metrics include <strong>A1 (WER/CER)</strong> and <strong>A2 (Spk-Sim)</strong>. Subjective metrics include local assessments <strong>B1 (Instruction)</strong>, <strong>B2 (Prosody)</strong>, <strong>B3 (Expressiveness)</strong>, and global assessments <strong>C1 (Interaction)</strong>, <strong>C2 (Global Flow)</strong>, <strong>C3 (Immersion)</strong>.</p>
+                    <p style="margin-bottom: 15px;"><strong>A/B Testing Protocol:</strong> For subjective metrics (B1-C3), we adopt an LLM-as-a-Judge A/B preference comparison protocol against the Ground Truth human audio. Scores are reported as Tie-Adjusted Win Rates (AWR), where 50 indicates parity with the human reference. Click on column headers to sort.</p>
+                    <p style="margin-bottom: 15px;"><strong>Evaluated Models:</strong> We systematically benchmark four categories of models: Context-aware multi-speaker models, Single-speaker voice-design models, Single-speaker voice-control models, and Multi-speaker TTS models.</p>
+                </div>
+                
+                <div style="background: #f8fafc; padding: 24px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 10px -2px rgba(0,0,0,0.02); margin-bottom: 20px;">
+                    <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: #0f172a;">Model Categories Details</h3>
+                    <ul style="margin-bottom: 25px; padding-left: 20px; font-size: 0.95rem; line-height: 1.8;">
+                        <li><span class="badge bg-green"></span> <strong>Context-aware multi-speaker</strong>: Models designed to handle multi-speaker generation with global context (e.g., SeedAudio, StepAudio 3 Gen).</li>
+                        <li><span class="badge bg-blue"></span> <strong>Single-speaker voice-design</strong>: Models generating speech from text instructions without reference audio (e.g., Qwen3-TTS, MiniMax-H3).</li>
+                        <li><span class="badge bg-yellow"></span> <strong>Single-speaker voice-control</strong>: Models generating speech conditioned on reference audio and instructions (e.g., FireRedTTS3, VoxCPM2, MiMo-Audio-7B).</li>
+                        <li><span class="badge bg-red"></span> <strong>Multi-speaker TTS</strong>: Models generating dialogue conditioned on target texts and reference audio (e.g., MOSS-TTSD, SoulX-Podcast, VibeVoice, FireRedTTS2, Higgs Audio V2).</li>
+                    </ul>
+                    
+                    <h3 style="font-size: 1.1rem; margin-bottom: 15px; color: #0f172a;">Metrics Definitions</h3>
+                    <ul style="padding-left: 20px; font-size: 0.9rem; line-height: 1.8; color: #475569;">
+                        <li><strong>A1 (WER/CER ↓)</strong>: Word/Character Error Rate for textual fidelity.</li>
+                        <li><strong>A2 (Spk-Sim ↑)</strong>: Speaker similarity for voice consistency.</li>
+                        <li><strong>B1 (Instruction ↑)</strong>: Adherence to the specific local context / stage direction.</li>
+                        <li><strong>B2 (Prosody ↑)</strong>: Naturalness of rhythm, phrasing, and absence of artifacts.</li>
+                        <li><strong>B3 (Expressiveness ↑)</strong>: Acting depth and dynamic range of the local delivery.</li>
+                        <li><strong>C1 (Interaction ↑)</strong>: Turn-taking and pragmatic feedback between speakers.</li>
+                        <li><strong>C2 (Global Flow ↑)</strong>: Acoustic continuity and smooth transitions across turns.</li>
+                        <li><strong>C3 (Immersion ↑)</strong>: Overall atmosphere and theatrical fidelity of the scene.</li>
+                    </ul>
+                </div>
+                
+                <div class="controls">
+                    <select id="lb-lang" onchange="renderLeaderboard()">
+                        <option value="zh">Chinese (ZH)</option>
+                        <option value="en">English (EN)</option>
+                    </select>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="lb-table">
+                        <thead id="lb-thead"></thead>
+                        <tbody id="lb-tbody"></tbody>
+                    </table>
+                </div>
+                
+                <div class="legend">
+                    <span class="badge bg-green"></span> Context-aware multi-speaker
+                    <span class="badge bg-blue"></span> Single-speaker voice-design
+                    <span class="badge bg-yellow"></span> Single-speaker voice-control
+                    <span class="badge bg-red"></span> Multi-speaker TTS
+                </div>
+            </section>
+
+            
+
+            <section id="case" class="section">
+                <h1 class="page-title">Case Study</h1>
+                
+                <div class="case-desc-box">
+                    <h3>Deep-dive Audio Comparison</h3>
+                    <p>Select a specific sample below. The left panel shows the structured script and Ground Truth audio (scrollable if too long). The right grid displays each model's generated audio and 6 evaluation metrics against the Ground Truth.</p>
+                </div>
+                
+                <div class="controls">
+                    <select id="case-lang" onchange="initCaseStudy()">
+                        <option value="zh">Chinese</option>
+                        <option value="en">English</option>
+                    </select>
+                    <select id="case-utt" onchange="renderCaseStudy()"></select>
+                </div>
+
+                <!-- 双栏布局 -->
+                <div class="case-layout">
+                    <!-- 左栏：剧本与 GT -->
+                    <aside class="case-sidebar">
+                        <div class="script-block bg-context">
+                            <h4>Global Context</h4>
+                            <p id="cs-bg"></p>
+                        </div>
+                        
+                        <div class="script-block">
+                            <h4>Characters</h4>
+                            <ul id="cs-chars" class="char-list"></ul>
+                        </div>
+                        
+                        <div class="script-block">
+                            <h4>Ground Truth Audio</h4>
+                            <audio id="cs-audio-gt" controls style="width: 100%; margin-top: 10px;"></audio>
+                        </div>
+
+                        <div class="script-block">
+                            <h4>Turn Details</h4>
+                            <div class="turns-scroll-container" id="cs-turns"></div>
+                        </div>
+                    </aside>
+
+                    <!-- 右栏：模型网格 -->
+                    <main class="case-main">
+                        <div class="models-grid" id="models-grid"></div>
+                    </main>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>

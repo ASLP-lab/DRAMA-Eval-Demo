@@ -17,6 +17,9 @@
         
         /* 表头排序悬停效果 */
         #lb-thead th:hover { background-color: #e2e8f0; }
+        
+        /* 隐藏原版可能有冲突的复选框样式 */
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -365,9 +368,13 @@
     <!-- 原有的主要逻辑 -->
     <script src="js/main.js"></script>
     
-    <!-- 覆盖脚本：处理排行榜的语言切换、数据显示和排序 -->
+    <!-- ========================================== -->
+    <!-- 覆盖脚本：接管排行榜和雷达图逻辑 -->
+    <!-- ========================================== -->
     <script>
-        // 重写排行榜渲染逻辑，直接读取 HTML 中的数据
+        /* ==========================================
+           1. 排行榜渲染与排序逻辑（接管原 main.js）
+           ========================================== */
         function renderLeaderboard() {
             const lang = document.getElementById('lb-lang').value;
             const rows = document.querySelectorAll('#lb-tbody tr');
@@ -380,16 +387,13 @@
             });
         }
 
-        // 添加点击表头排序功能
         function sortTable(colIndex) {
             const tbody = document.getElementById('lb-tbody');
             const rows = Array.from(tbody.querySelectorAll('tr'));
             
-            // 切换排序方向
             const isAsc = tbody.dataset.sortOrder !== 'asc';
             tbody.dataset.sortOrder = isAsc ? 'asc' : 'desc';
             
-            // 解析数值（去掉 %、± 及后面的标准差）
             function parseVal(text) {
                 if (!text) return null;
                 text = text.replace(/%/g, '').split('±')[0].trim();
@@ -398,7 +402,6 @@
                 return isNaN(num) ? null : num;
             }
 
-            // 排序
             rows.sort((a, b) => {
                 const aText = a.children[colIndex].textContent.trim();
                 const bText = b.children[colIndex].textContent.trim();
@@ -413,17 +416,117 @@
                 return isAsc ? aText.localeCompare(bText) : bText.localeCompare(aText);
             });
             
-            // 将排序后的行重新插入
             rows.forEach(row => tbody.appendChild(row));
-            
-            // 重新应用语言过滤隐藏
             renderLeaderboard(); 
         }
 
-        // 页面加载完成后执行一次初始渲染，确保默认显示中文
+        /* ==========================================
+           2. 雷达图重写逻辑（含新模型数据）
+           ========================================== */
+        // 新雷达图数据配置（包含新增的 4 个模型）
+        const radarData = {
+            en: {
+                "Ming-3.0-tts-tiny":         [10 - 7.64, 0.7165, 0,    39.0, 14.4, 26.1, 13.3, 9.3],
+                "Fun-CosyVoice3-0.5B":       [10 - 4.31, 0.6968, 31.6, 38.1, 22.4, 29.6, 19.1, 15.4],
+                "Ming-3.0-tts-0.5B":         [10 - 4.13, 0.3573, 34.5, 48.6, 28.8, 37.6, 31.3, 30.1],
+                "MOSS-TTS-2.0":              [10 - 4.87, 0.7609, 25.2, 36.8, 17.0, 34.2, 31.7, 26.4]
+            },
+            zh: {
+                "Ming-3.0-tts-tiny":         [10 - 4.67, 0.7401, 0,    49.5, 29.6, 33.9, 31.3, 27.1],
+                "Fun-CosyVoice3-0.5B":       [10 - 2.98, 0.7556, 50.2, 48.2, 50.6, 42.6, 38.8, 36.9],
+                "Ming-3.0-tts-0.5B":         [10 - 2.55, 0.5249, 43.5, 55.6, 41.2, 39.7, 31.7, 30.2],
+                "MOSS-TTS-2.0":              [10 - 4.28, 0.7977, 32.5, 44.5, 26.0, 39.6, 38.7, 34.8]
+            }
+        };
+
+        const modelCategories = {
+            "Ming-3.0-tts-tiny": "#3b82f6",       // Blue
+            "Ming-3.0-tts-0.5B": "#3b82f6",       // Blue
+            "Fun-CosyVoice3-0.5B": "#eab308",     // Yellow
+            "MOSS-TTS-2.0": "#eab308"             // Yellow
+        };
+
+        let selectedModels = Object.keys(radarData.zh);
+
+        window.renderRadar = function() {
+            const lang = document.getElementById('radar-lang').value;
+            const chartDom = document.getElementById('radar-chart');
+            const myChart = echarts.getInstanceByDom(chartDom) || echarts.init(chartDom);
+            
+            // 生成复选框
+            const cbContainer = document.getElementById('radar-model-checkboxes');
+            cbContainer.innerHTML = '';
+            Object.keys(radarData[lang]).forEach(model => {
+                const label = document.createElement('label');
+                label.style.cssText = "display:inline-flex; align-items:center; margin-right:15px; cursor:pointer;";
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = model;
+                cb.checked = selectedModels.includes(model);
+                cb.style.marginRight = "5px";
+                cb.onchange = function() {
+                    if(this.checked) {
+                        if(!selectedModels.includes(model)) selectedModels.push(model);
+                    } else {
+                        selectedModels = selectedModels.filter(m => m !== model);
+                    }
+                    window.renderRadar();
+                };
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(model));
+                cbContainer.appendChild(label);
+            });
+
+            const seriesData = selectedModels.map(model => {
+                return {
+                    name: model,
+                    value: radarData[lang][model],
+                    itemStyle: { color: modelCategories[model] },
+                    lineStyle: { width: 2 }
+                };
+            });
+
+            const option = {
+                tooltip: {},
+                legend: { data: selectedModels, bottom: 0 },
+                radar: {
+                    indicator: [
+                        { name: 'A1 (WER/CER)', max: 10 },
+                        { name: 'A2 (Spk-Sim)', max: 1 },
+                        { name: 'B1', max: 100 },
+                        { name: 'B2', max: 100 },
+                        { name: 'B3', max: 100 },
+                        { name: 'C1', max: 100 },
+                        { name: 'C2', max: 100 },
+                        { name: 'C3', max: 100 }
+                    ],
+                    center: ['50%', '45%'],
+                    radius: '60%'
+                },
+                series: [{
+                    type: 'radar',
+                    data: seriesData
+                }]
+            };
+            myChart.setOption(option);
+        };
+
+        window.toggleAllRadar = function() {
+            const lang = document.getElementById('radar-lang').value;
+            if (selectedModels.length === Object.keys(radarData[lang]).length) {
+                selectedModels = []; // 如果全选了，就全取消
+            } else {
+                selectedModels = Object.keys(radarData[lang]); // 否则全选
+            }
+            window.renderRadar();
+        };
+
+        // 页面加载完成后执行一次初始渲染
         document.addEventListener('DOMContentLoaded', () => {
-            // 给一点延迟，确保 main.js 执行完后覆盖它的逻辑
-            setTimeout(renderLeaderboard, 100); 
+            setTimeout(() => {
+                renderLeaderboard(); 
+                window.renderRadar();
+            }, 100); 
         });
     </script>
 </body>

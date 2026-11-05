@@ -16,18 +16,25 @@
         .row-red { background-color: #fee2e2 !important; }    /* Multi-speaker TTS */
         
         /* 修复表头悬停效果 */
-        #lb-thead th { cursor: pointer; white-space: nowrap; }
+        #lb-thead th { cursor: pointer; white-space: nowrap; padding: 10px 8px !important; }
         #lb-thead th:hover { background-color: #e2e8f0; }
 
-        /* 修复表格过宽导致的页面溢出 */
+        /* 修复表格过宽，取消横向滚动，自适应铺满 */
         .table-wrapper {
-            overflow-x: auto;
             width: 100%;
-            -webkit-overflow-scrolling: touch;
+            overflow-x: auto;
         }
         #lb-table {
-            min-width: 1000px; /* 确保列不会被挤得太窄 */
             width: 100%;
+            table-layout: auto; /* 自适应宽度 */
+            font-size: 0.9rem; /* 稍微缩小字体以适配一屏 */
+        }
+        #lb-table td, #lb-table th {
+            padding: 12px 8px; /* 紧凑一点的内边距 */
+            text-align: center; /* 居中对齐更美观 */
+        }
+        #lb-table td:first-child, #lb-table th:first-child {
+            text-align: left; /* 第一列模型名字左对齐 */
         }
         
         /* 隐藏原版可能有冲突的复选框样式 */
@@ -223,231 +230,221 @@
                             </tr>
                         </thead>
                         <tbody id="lb-tbody">
-                            <!-- ===== 原有模型数据 (默认归属 ZH，加入 all 保证切换不丢失) ===== -->
-                            <!-- 绿色: Context-aware multi-speaker -->
+                            <!-- ==================== 绿色：Context-aware multi-speaker ==================== -->
                             <tr data-lang="all" class="row-green">
                                 <td>SeedAudio</td>
-                                <td>2.58%</td>
+                                <td>2.58</td>
                                 <td>0.74</td>
-                                <td>62.20%</td>
-                                <td>57.40%</td>
-                                <td>64.20%</td>
-                                <td>67.40%</td>
-                                <td>73.20%</td>
-                                <td>75.70%</td>
+                                <td>62.20</td>
+                                <td>57.40</td>
+                                <td>64.20</td>
+                                <td>67.40</td>
+                                <td>73.20</td>
+                                <td>75.70</td>
                             </tr>
                             <tr data-lang="all" class="row-green">
                                 <td>StepAudio 3 Gen</td>
-                                <td>3.78%</td>
+                                <td>3.78</td>
                                 <td>0.76</td>
-                                <td>57.30%</td>
-                                <td>58.30%</td>
-                                <td>56.90%</td>
-                                <td>60.20%</td>
-                                <td>64.70%</td>
-                                <td>64.60%</td>
+                                <td>57.30</td>
+                                <td>58.30</td>
+                                <td>56.90</td>
+                                <td>60.20</td>
+                                <td>64.70</td>
+                                <td>64.60</td>
                             </tr>
-                            
-                            <!-- 蓝色: Single-speaker voice-design -->
+
+                            <!-- ==================== 蓝色：Single-speaker voice-design ==================== -->
                             <tr data-lang="all" class="row-blue">
                                 <td>MiniMax-H3</td>
-                                <td>3.84%</td>
+                                <td>3.84</td>
                                 <td>0.58</td>
-                                <td>56.60%</td>
-                                <td>57.90%</td>
-                                <td>57.60%</td>
-                                <td>49.70%</td>
-                                <td>42.20%</td>
-                                <td>43.20%</td>
+                                <td>56.60</td>
+                                <td>57.90</td>
+                                <td>57.60</td>
+                                <td>49.70</td>
+                                <td>42.20</td>
+                                <td>43.20</td>
                             </tr>
                             <tr data-lang="all" class="row-blue">
                                 <td>Qwen3-TTS (VD)</td>
-                                <td>2.73%</td>
+                                <td>2.73</td>
                                 <td>0.59</td>
-                                <td>59.70%</td>
-                                <td>54.60%</td>
-                                <td>60.60%</td>
-                                <td>40.00%</td>
-                                <td>28.20%</td>
-                                <td>27.70%</td>
+                                <td>59.70</td>
+                                <td>54.60</td>
+                                <td>60.60</td>
+                                <td>40.00</td>
+                                <td>28.20</td>
+                                <td>27.70</td>
+                            </tr>
+                            <tr data-lang="en" class="row-blue">
+                                <td>Ming-3.0-tts-tiny</td>
+                                <td>7.64</td>
+                                <td>0.7165</td>
+                                <td>/</td>
+                                <td>39.0</td>
+                                <td>14.4</td>
+                                <td>26.1</td>
+                                <td>13.3</td>
+                                <td>9.3</td>
+                            </tr>
+                            <tr data-lang="zh" class="row-blue">
+                                <td>Ming-3.0-tts-tiny</td>
+                                <td>4.67</td>
+                                <td>0.7401</td>
+                                <td>/</td>
+                                <td>49.5</td>
+                                <td>29.6</td>
+                                <td>33.9</td>
+                                <td>31.3</td>
+                                <td>27.1</td>
+                            </tr>
+                            <tr data-lang="en" class="row-blue">
+                                <td>Ming-3.0-tts-0.5B</td>
+                                <td>4.13</td>
+                                <td>0.3573</td>
+                                <td>34.5</td>
+                                <td>48.6</td>
+                                <td>28.8</td>
+                                <td>37.6</td>
+                                <td>31.3</td>
+                                <td>30.1</td>
+                            </tr>
+                            <tr data-lang="zh" class="row-blue">
+                                <td>Ming-3.0-tts-0.5B</td>
+                                <td>2.55</td>
+                                <td>0.5249</td>
+                                <td>43.5</td>
+                                <td>55.6</td>
+                                <td>41.2</td>
+                                <td>39.7</td>
+                                <td>31.7</td>
+                                <td>30.2</td>
                             </tr>
 
-                            <!-- 黄色: Single-speaker voice-control -->
+                            <!-- ==================== 黄色：Single-speaker voice-control ==================== -->
                             <tr data-lang="all" class="row-yellow">
                                 <td>FireRedTTS3</td>
-                                <td>2.64%</td>
+                                <td>2.64</td>
                                 <td>0.62</td>
-                                <td>52.10%</td>
-                                <td>55.10%</td>
-                                <td>50.40%</td>
-                                <td>39.80%</td>
-                                <td>31.90%</td>
-                                <td>30.70%</td>
+                                <td>52.10</td>
+                                <td>55.10</td>
+                                <td>50.40</td>
+                                <td>39.80</td>
+                                <td>31.90</td>
+                                <td>30.70</td>
                             </tr>
                             <tr data-lang="all" class="row-yellow">
                                 <td>VoxCPM2</td>
-                                <td>3.25%</td>
+                                <td>3.25</td>
                                 <td>0.67</td>
-                                <td>48.10%</td>
-                                <td>48.60%</td>
-                                <td>48.00%</td>
-                                <td>36.40%</td>
-                                <td>29.80%</td>
-                                <td>29.10%</td>
+                                <td>48.10</td>
+                                <td>48.60</td>
+                                <td>48.00</td>
+                                <td>36.40</td>
+                                <td>29.80</td>
+                                <td>29.10</td>
                             </tr>
                             <tr data-lang="all" class="row-yellow">
                                 <td>MiMo-Audio-7B</td>
-                                <td>5.17%</td>
+                                <td>5.17</td>
                                 <td>0.55</td>
-                                <td>36.80%</td>
-                                <td>34.80%</td>
-                                <td>37.00%</td>
-                                <td>24.20%</td>
-                                <td>10.80%</td>
-                                <td>10.90%</td>
+                                <td>36.80</td>
+                                <td>34.80</td>
+                                <td>37.00</td>
+                                <td>24.20</td>
+                                <td>10.80</td>
+                                <td>10.90</td>
+                            </tr>
+                            <tr data-lang="en" class="row-yellow">
+                                <td>Fun-CosyVoice3-0.5B</td>
+                                <td>4.31</td>
+                                <td>0.6968</td>
+                                <td>31.6</td>
+                                <td>38.1</td>
+                                <td>22.4</td>
+                                <td>29.6</td>
+                                <td>19.1</td>
+                                <td>15.4</td>
+                            </tr>
+                            <tr data-lang="zh" class="row-yellow">
+                                <td>Fun-CosyVoice3-0.5B</td>
+                                <td>2.98</td>
+                                <td>0.7556</td>
+                                <td>50.2</td>
+                                <td>48.2</td>
+                                <td>50.6</td>
+                                <td>42.6</td>
+                                <td>38.8</td>
+                                <td>36.9</td>
+                            </tr>
+                            <tr data-lang="en" class="row-yellow">
+                                <td>MOSS-TTS-2.0</td>
+                                <td>4.87</td>
+                                <td>0.7609</td>
+                                <td>25.2</td>
+                                <td>36.8</td>
+                                <td>17.0</td>
+                                <td>34.2</td>
+                                <td>31.7</td>
+                                <td>26.4</td>
+                            </tr>
+                            <tr data-lang="zh" class="row-yellow">
+                                <td>MOSS-TTS-2.0</td>
+                                <td>4.28</td>
+                                <td>0.7977</td>
+                                <td>32.5</td>
+                                <td>44.5</td>
+                                <td>26.0</td>
+                                <td>39.6</td>
+                                <td>38.7</td>
+                                <td>34.8</td>
                             </tr>
 
-                            <!-- 红色: Multi-speaker TTS -->
+                            <!-- ==================== 红色：Multi-speaker TTS ==================== -->
                             <tr data-lang="all" class="row-red">
                                 <td>MOSS-TTSD</td>
-                                <td>4.06%</td>
+                                <td>4.06</td>
                                 <td>0.78</td>
                                 <td>-</td>
-                                <td>46.60%</td>
-                                <td>35.90%</td>
-                                <td>38.10%</td>
-                                <td>38.80%</td>
-                                <td>35.20%</td>
+                                <td>46.60</td>
+                                <td>35.90</td>
+                                <td>38.10</td>
+                                <td>38.80</td>
+                                <td>35.20</td>
                             </tr>
                             <tr data-lang="all" class="row-red">
                                 <td>SoulX-Podcast</td>
-                                <td>2.74%</td>
+                                <td>2.74</td>
                                 <td>0.78</td>
                                 <td>-</td>
-                                <td>40.70%</td>
-                                <td>27.10%</td>
-                                <td>35.40%</td>
-                                <td>31.30%</td>
-                                <td>27.70%</td>
+                                <td>40.70</td>
+                                <td>27.10</td>
+                                <td>35.40</td>
+                                <td>31.30</td>
+                                <td>27.70</td>
                             </tr>
                             <tr data-lang="all" class="row-red">
                                 <td>VibeVoice</td>
-                                <td>5.62%</td>
+                                <td>5.62</td>
                                 <td>0.68</td>
                                 <td>-</td>
-                                <td>35.00%</td>
-                                <td>31.80%</td>
-                                <td>28.70%</td>
-                                <td>22.40%</td>
-                                <td>21.50%</td>
+                                <td>35.00</td>
+                                <td>31.80</td>
+                                <td>28.70</td>
+                                <td>22.40</td>
+                                <td>21.50</td>
                             </tr>
                             <tr data-lang="all" class="row-red">
                                 <td>FireRedTTS2</td>
-                                <td>3.01%</td>
+                                <td>3.01</td>
                                 <td>0.73</td>
                                 <td>-</td>
-                                <td>39.50%</td>
-                                <td>28.80%</td>
-                                <td>31.70%</td>
-                                <td>27.40%</td>
-                                <td>25.80%</td>
-                            </tr>
-
-                            <!-- ===== 新增模型数据 ===== -->
-                            <!-- 蓝色: Single-speaker voice-design (新增) -->
-                            <tr data-lang="en" class="row-blue">
-                                <td>Ming-3.0-tts-tiny</td>
-                                <td>7.64%</td>
-                                <td>0.7165 ± 0.1042</td>
-                                <td>/</td>
-                                <td>39.0% ± 0.9%</td>
-                                <td>14.4% ± 0.5%</td>
-                                <td>26.1% ± 0.2%</td>
-                                <td>13.3% ± 0.5%</td>
-                                <td>9.3% ± 0.2%</td>
-                            </tr>
-                            <tr data-lang="zh" class="row-blue">
-                                <td>Ming-3.0-tts-tiny</td>
-                                <td>4.67%</td>
-                                <td>0.7401 ± 0.0817</td>
-                                <td>/</td>
-                                <td>49.5% ± 0.8%</td>
-                                <td>29.6% ± 0.3%</td>
-                                <td>33.9% ± 0.8%</td>
-                                <td>31.3% ± 1.3%</td>
-                                <td>27.1% ± 0.6%</td>
-                            </tr>
-                            
-                            <!-- 黄色: Single-speaker voice-control (新增) -->
-                            <tr data-lang="en" class="row-yellow">
-                                <td>Fun-CosyVoice3-0.5B</td>
-                                <td>4.31%</td>
-                                <td>0.6968 ± 0.0573</td>
-                                <td>31.6% ± 0.4%</td>
-                                <td>38.1% ± 0.8%</td>
-                                <td>22.4% ± 0.3%</td>
-                                <td>29.6% ± 0.3%</td>
-                                <td>19.1% ± 1.0%</td>
-                                <td>15.4% ± 0.9%</td>
-                            </tr>
-                            <tr data-lang="zh" class="row-yellow">
-                                <td>Fun-CosyVoice3-0.5B</td>
-                                <td>2.98%</td>
-                                <td>0.7556 ± 0.0480</td>
-                                <td>50.2% ± 0.2%</td>
-                                <td>48.2% ± 0.3%</td>
-                                <td>50.6% ± 0.6%</td>
-                                <td>42.6% ± 0.9%</td>
-                                <td>38.8% ± 1.0%</td>
-                                <td>36.9% ± 0.9%</td>
-                            </tr>
-
-                            <!-- 蓝色: Single-speaker voice-design (新增) -->
-                            <tr data-lang="en" class="row-blue">
-                                <td>Ming-3.0-tts-0.5B</td>
-                                <td>4.13%</td>
-                                <td>0.3573 ± 0.1044</td>
-                                <td>34.5% ± 0.3%</td>
-                                <td>48.6% ± 0.4%</td>
-                                <td>28.8% ± 0.3%</td>
-                                <td>37.6% ± 0.3%</td>
-                                <td>31.3% ± 0.7%</td>
-                                <td>30.1% ± 0.7%</td>
-                            </tr>
-                            <tr data-lang="zh" class="row-blue">
-                                <td>Ming-3.0-tts-0.5B</td>
-                                <td>2.55%</td>
-                                <td>0.5249 ± 0.1107</td>
-                                <td>43.5% ± 0.5%</td>
-                                <td>55.6% ± 0.1%</td>
-                                <td>41.2% ± 0.7%</td>
-                                <td>39.7% ± 0.7%</td>
-                                <td>31.7% ± 0.2%</td>
-                                <td>30.2% ± 0.4%</td>
-                            </tr>
-
-                            <!-- 黄色: Single-speaker voice-control (新增) -->
-                            <tr data-lang="en" class="row-yellow">
-                                <td>MOSS-TTS-2.0</td>
-                                <td>4.87%</td>
-                                <td>0.7609 ± 0.0993</td>
-                                <td>25.2% ± 1.4%</td>
-                                <td>36.8% ± 1.2%</td>
-                                <td>17.0% ± 0.9%</td>
-                                <td>34.2% ± 0.5%</td>
-                                <td>31.7% ± 0.9%</td>
-                                <td>26.4% ± 0.5%</td>
-                            </tr>
-                            <tr data-lang="zh" class="row-yellow">
-                                <td>MOSS-TTS-2.0</td>
-                                <td>4.28%</td>
-                                <td>0.7977 ± 0.0663</td>
-                                <td>32.5% ± 0.5%</td>
-                                <td>44.5% ± 0.9%</td>
-                                <td>26.0% ± 0.3%</td>
-                                <td>39.6% ± 0.1%</td>
-                                <td>38.7% ± 0.9%</td>
-                                <td>34.8% ± 0.6%</td>
+                                <td>39.50</td>
+                                <td>28.80</td>
+                                <td>31.70</td>
+                                <td>27.40</td>
+                                <td>25.80</td>
                             </tr>
                         </tbody>
                     </table>
@@ -570,7 +567,7 @@
         /* ==========================================
            2. 雷达图重写逻辑（合并新旧模型数据）
            ========================================== */
-        // 合并后的雷达图数据配置
+        // 合并后的雷达图数据配置（去除了标准差）
         const radarData = {
             en: {
                 // 新模型数据
@@ -578,7 +575,7 @@
                 "Fun-CosyVoice3-0.5B":       [10 - 4.31, 0.6968, 31.6, 38.1, 22.4, 29.6, 19.1, 15.4],
                 "Ming-3.0-tts-0.5B":         [10 - 4.13, 0.3573, 34.5, 48.6, 28.8, 37.6, 31.3, 30.1],
                 "MOSS-TTS-2.0":              [10 - 4.87, 0.7609, 25.2, 36.8, 17.0, 34.2, 31.7, 26.4],
-                // 旧模型数据（由于未提供EN具体数据，暂用ZH数据补齐，或保留原英文逻辑）
+                // 旧模型数据
                 "SeedAudio":                 [10 - 2.58, 0.74, 62.2, 57.4, 64.2, 67.4, 73.2, 75.7],
                 "StepAudio 3 Gen":           [10 - 3.78, 0.76, 57.3, 58.3, 56.9, 60.2, 64.7, 64.6],
                 "MiniMax-H3":                [10 - 3.84, 0.58, 56.6, 57.9, 57.6, 49.7, 42.2, 43.2],
@@ -630,7 +627,7 @@
             "FireRedTTS2": "#ef4444"
         };
 
-        let selectedModels = Object.keys(radarData.zh);
+        let selectedModels = ["SeedAudio", "MiniMax-H3", "Ming-3.0-tts-tiny", "MOSS-TTS-2.0"];
 
         window.renderRadar = function() {
             const lang = document.getElementById('radar-lang').value;
@@ -639,7 +636,6 @@
             
             // 生成复选框
             const cbContainer = document.getElementById('radar-model-checkboxes');
-            // 为了防止每次渲染重置，检查是否已经生成
             if (cbContainer.children.length !== Object.keys(radarData[lang]).length) {
                 cbContainer.innerHTML = '';
                 Object.keys(radarData[lang]).forEach(model => {
@@ -678,7 +674,7 @@
                 legend: { 
                     data: selectedModels, 
                     bottom: 0,
-                    type: 'scroll' // 模型多了之后，图例可以滚动
+                    type: 'scroll'
                 },
                 radar: {
                     indicator: [
@@ -705,21 +701,17 @@
         window.toggleAllRadar = function() {
             const lang = document.getElementById('radar-lang').value;
             if (selectedModels.length === Object.keys(radarData[lang]).length) {
-                selectedModels = []; // 如果全选了，就全取消
+                selectedModels = []; 
             } else {
-                selectedModels = Object.keys(radarData[lang]); // 否则全选
+                selectedModels = Object.keys(radarData[lang]); 
             }
-            // 重新触发复选框更新
             document.getElementById('radar-model-checkboxes').innerHTML = '';
             window.renderRadar();
         };
 
-        // 页面加载完成后执行一次初始渲染
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 renderLeaderboard(); 
-                // 默认只勾选部分模型，避免图表太乱
-                selectedModels = ["SeedAudio", "MiniMax-H3", "Ming-3.0-tts-tiny", "MOSS-TTS-2.0"];
                 window.renderRadar();
             }, 100); 
         });

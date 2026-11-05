@@ -8,36 +8,25 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
     <!-- 引入 Nunito (标题) 和 Inter (正文) 字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- 自定义样式：用于表格分类背景色 -->
     <style>
-        /* 自定义表格行颜色 */
         .row-blue { background-color: #dbeafe !important; }   /* Single-speaker voice-design */
         .row-yellow { background-color: #fef9c3 !important; } /* Single-speaker voice-control */
         .row-green { background-color: #d1fae5 !important; }  /* Context-aware multi-speaker */
         .row-red { background-color: #fee2e2 !important; }    /* Multi-speaker TTS */
         
-        /* 修复表头悬停效果 */
+        /* 修复表头悬停效果与点击手势 */
         #lb-thead th { cursor: pointer; white-space: nowrap; padding: 10px 8px !important; font-size: 0.9rem; }
         #lb-thead th:hover { background-color: #e2e8f0; }
 
-        /* 调整表格自适应 */
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-        }
-        #lb-table {
-            width: 100%;
-            font-size: 0.9rem; 
-        }
-        #lb-table td, #lb-table th {
-            padding: 12px 8px; 
-            text-align: center; 
-        }
-        #lb-table td:first-child, #lb-table th:first-child {
-            text-align: left; 
-            font-weight: 500;
-        }
+        /* 调整表格自适应铺满 */
+        .table-wrapper { width: 100%; overflow-x: auto; }
+        #lb-table { width: 100%; font-size: 0.9rem; }
+        #lb-table td, #lb-table th { padding: 12px 8px; text-align: center; }
+        #lb-table td:first-child, #lb-table th:first-child { text-align: left; font-weight: 500; }
         
-        /* 隐藏原版可能有冲突的复选框样式 */
+        /* 雷达图复选框容器 */
         .checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     </style>
 </head>
@@ -59,7 +48,6 @@
             <div class="sidebar-inner">
                 <p class="sidebar-title">ON THIS PAGE</p>
                 <nav class="sidebar-nav">
-                    <!-- 注意：保留了原版的 active 状态 -->
                     <a href="#overview" class="active">Overview</a>
                     <a href="#radar">Radar Chart</a>
                     <a href="#leaderboard">Leaderboard</a>
@@ -94,26 +82,28 @@
                 </div>
 
                 <div id="radar" class="radar-inline-section" style="margin-bottom: 40px; padding-top: 10px;">
-                <h1 class="page-title">Radar Chart</h1>
-                
-                <div class="radar-desc-box">
-                    <h3>Multi-Dimensional Capability Comparison</h3>
-                    <p>This radar chart visualizes the performance across objective (A1, A2), local (B1-B3), and global (C1-C3) metrics. The A1 WER/CER is inverted (10 - WER) so that a larger area always indicates better overall capability. Select specific models below to compare their strengths and weaknesses side-by-side.</p>
-                </div>
+                    <h1 class="page-title">Radar Chart</h1>
+                    
+                    <div class="radar-desc-box">
+                        <h3>Multi-Dimensional Capability Comparison</h3>
+                        <p>This radar chart visualizes the performance across objective (A1, A2), local (B1-B3), and global (C1-C3) metrics. The A1 WER/CER is inverted (10 - WER) so that a larger area always indicates better overall capability. Select specific models below to compare their strengths and weaknesses side-by-side.</p>
+                    </div>
 
-                <div class="radar-controls">
-                    <select id="radar-lang" onchange="renderRadar()">
-                        <option value="zh">Chinese (ZH)</option>
-                        <option value="en">English (EN)</option>
-                    </select>
-                    <div style="margin-bottom:10px;"><button onclick="toggleAllRadar()" style="padding:6px 12px; cursor:pointer; border-radius:6px; border:1px solid #cbd5e1; background:#fff; font-weight:600; color:var(--primary);">Toggle All Models</button></div>
-<div id="radar-model-checkboxes" class="checkbox-group"></div>
+                    <div class="radar-controls">
+                        <select id="radar-lang" onchange="renderRadar()">
+                            <option value="zh">Chinese (ZH)</option>
+                            <option value="en">English (EN)</option>
+                        </select>
+                        <div style="margin-bottom:10px;">
+                            <button onclick="toggleAllRadar()" style="padding:6px 12px; cursor:pointer; border-radius:6px; border:1px solid #cbd5e1; background:#fff; font-weight:600; color:var(--primary);">Toggle All Models</button>
+                        </div>
+                        <div id="radar-model-checkboxes" class="checkbox-group"></div>
+                    </div>
+                    <div id="radar-chart" style="width: 100%; height: 600px; min-height: 600px; margin-top:20px; display: block;"></div>
                 </div>
-                <div id="radar-chart" style="width: 100%; height: 600px; min-height: 600px; margin-top:20px; display: block;"></div>
-            </div>
 
                 <h2 class="page-subtitle" style="margin-top: 60px; margin-bottom: 30px; font-family: 'Nunito', sans-serif; font-size: 1.8rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; color: #1e293b;">Dataset Construction & Analysis</h2>
-            <div class="figures-container">
+                <div class="figures-container">
                     <div class="fig-box">
                         <div class="fig-desc">
                             <h3>Figure 1: Dataset Construction Pipeline</h3>
@@ -458,6 +448,8 @@
                     <span class="badge bg-red"></span> Multi-speaker TTS
                 </div>
             </section>
+
+            <!-- Case Study Section (原封不动保留) -->
             <section id="case" class="section">
                 <h1 class="page-title">Case Study</h1>
                 
@@ -512,11 +504,11 @@
     <script src="js/main.js"></script>
     
     <!-- ========================================== -->
-    <!-- 覆盖脚本：接管排行榜和雷达图逻辑（独立作用域，防止污染） -->
+    <!-- 覆盖脚本：接管排行榜和雷达图逻辑 -->
     <!-- ========================================== -->
     <script>
         (function() {
-            // 暴露到 window 供 HTML 的 onchange/onclick 调用
+            // 1. 定义排行榜渲染逻辑
             window.renderLeaderboard = function() {
                 const lang = document.getElementById('lb-lang').value;
                 const rows = document.querySelectorAll('#lb-tbody tr');
@@ -530,6 +522,7 @@
                 });
             };
 
+            // 2. 定义表格排序逻辑
             window.sortTable = function(colIndex) {
                 const tbody = document.getElementById('lb-tbody');
                 const rows = Array.from(tbody.querySelectorAll('tr'));
@@ -563,8 +556,8 @@
                 window.renderLeaderboard(); 
             };
 
-            // 雷达图数据配置
-            const radarData = {
+            // 3. 定义雷达图数据及配置（严格独立变量名，避免冲突）
+            const customRadarData = {
                 en: {
                     "Ming-3.0-tts-tiny":         [10 - 7.64, 0.7165, 0,    39.0, 14.4, 26.1, 13.3, 9.3],
                     "Fun-CosyVoice3-0.5B":       [10 - 4.31, 0.6968, 31.6, 38.1, 22.4, 29.6, 19.1, 15.4],
@@ -601,7 +594,7 @@
                 }
             };
 
-            const modelCategories = {
+            const customModelCategories = {
                 "Ming-3.0-tts-tiny": "#3b82f6", "Ming-3.0-tts-0.5B": "#3b82f6", "MiniMax-H3": "#3b82f6", "Qwen3-TTS (VD)": "#3b82f6",
                 "Fun-CosyVoice3-0.5B": "#eab308", "MOSS-TTS-2.0": "#eab308", "FireRedTTS3": "#eab308", "VoxCPM2": "#eab308", "MiMo-Audio-7B": "#eab308",
                 "SeedAudio": "#22c55e", "StepAudio 3 Gen": "#22c55e",
@@ -610,15 +603,16 @@
 
             let selectedModels = ["SeedAudio", "MiniMax-H3", "Ming-3.0-tts-tiny", "MOSS-TTS-2.0"];
 
+            // 4. 定义雷达图重绘逻辑
             window.renderRadar = function() {
                 const lang = document.getElementById('radar-lang').value;
                 const chartDom = document.getElementById('radar-chart');
                 const myChart = echarts.getInstanceByDom(chartDom) || echarts.init(chartDom);
                 
                 const cbContainer = document.getElementById('radar-model-checkboxes');
-                if (cbContainer.children.length !== Object.keys(radarData[lang]).length) {
+                if (cbContainer.children.length !== Object.keys(customRadarData[lang]).length) {
                     cbContainer.innerHTML = '';
-                    Object.keys(radarData[lang]).forEach(model => {
+                    Object.keys(customRadarData[lang]).forEach(model => {
                         const label = document.createElement('label');
                         label.style.cssText = "display:inline-flex; align-items:center; margin-right:15px; cursor:pointer; font-size: 13px;";
                         const cb = document.createElement('input');
@@ -643,8 +637,8 @@
                 const seriesData = selectedModels.map(model => {
                     return {
                         name: model,
-                        value: radarData[lang][model],
-                        itemStyle: { color: modelCategories[model] || '#999' },
+                        value: customRadarData[lang][model],
+                        itemStyle: { color: customModelCategories[model] || '#999' },
                         lineStyle: { width: 2 }
                     };
                 });
@@ -667,18 +661,16 @@
 
             window.toggleAllRadar = function() {
                 const lang = document.getElementById('radar-lang').value;
-                if (selectedModels.length === Object.keys(radarData[lang]).length) {
+                if (selectedModels.length === Object.keys(customRadarData[lang]).length) {
                     selectedModels = []; 
                 } else {
-                    selectedModels = Object.keys(radarData[lang]); 
+                    selectedModels = Object.keys(customRadarData[lang]); 
                 }
                 document.getElementById('radar-model-checkboxes').innerHTML = '';
                 window.renderRadar();
             };
 
-            // ==========================================
-            // 修复左侧侧边栏滚动高亮跟随
-            // ==========================================
+            // 5. 侧边栏滚动跟随逻辑
             window.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     window.renderLeaderboard(); 
@@ -687,13 +679,11 @@
                     const sections = document.querySelectorAll('section[id]');
                     const navLinks = document.querySelectorAll('.sidebar-nav a');
                     
-                    // 滚动监听
                     window.addEventListener('scroll', () => {
                         let current = '';
                         sections.forEach(section => {
                             const sectionTop = section.offsetTop;
-                            // 当滚动位置超过区块顶部一定距离时，判定为当前区块
-                            if (window.scrollY >= sectionTop - 150) {
+                            if (window.scrollY >= sectionTop - 200) {
                                 current = section.getAttribute('id');
                             }
                         });

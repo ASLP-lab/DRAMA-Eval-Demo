@@ -13,7 +13,7 @@ async function loadData() {
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2 },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9 },
             // MOSS-TTS-2.0 改为 red
-            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.28, A2: 0.7977, B1: 32.5, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8 }
+            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.28, A2: 0.7977, B1: null, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8 }
         ];
         const newModelsEn = [
             // Ming-tiny 改为 yellow
@@ -21,7 +21,7 @@ async function loadData() {
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1 },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4 },
             // MOSS-TTS-2.0 改为 red
-            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.87, A2: 0.7609, B1: 25.2, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4 }
+            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.87, A2: 0.7609, B1: null, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4 }
         ];
 
         if (!metricsData) metricsData = {};

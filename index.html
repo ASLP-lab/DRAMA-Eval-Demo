@@ -9,12 +9,22 @@
     <!-- 引入 Nunito (标题) 和 Inter (正文) 字体 -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- 添加这段样式，解决表格左右滚动问题，让列宽自适应铺满一屏 -->
     <style>
+        /* 添加颜色定义，供 main.js 动态渲染使用 */
+        .bg-green { background-color: #d1fae5 !important; }   /* Context-aware multi-speaker */
+        .bg-blue { background-color: #dbeafe !important; }    /* Single-speaker voice-design */
+        .bg-yellow { background-color: #fef9c3 !important; }  /* Single-speaker voice-control */
+        .bg-red { background-color: #fee2e2 !important; }     /* Multi-speaker TTS */
+
+        /* 解决表格左右滚动问题，让列宽自适应铺满一屏 */
         .table-wrapper { width: 100%; overflow-x: auto; }
         #lb-table { width: 100%; font-size: 0.85rem; table-layout: auto; }
         #lb-table td, #lb-table th { padding: 10px 5px !important; text-align: center; }
         #lb-table td:first-child, #lb-table th:first-child { text-align: left; padding-left: 15px !important; font-weight: 600; }
+        
+        /* 表头悬停效果 */
+        #lb-thead th { cursor: pointer; white-space: nowrap; }
+        #lb-thead th:hover { background-color: #e2e8f0; }
     </style>
 </head>
 <body>
@@ -195,10 +205,10 @@
                 <div class="table-wrapper">
                     <table id="lb-table">
                         <thead id="lb-thead">
-                            <!-- 表头会由 main.js 自动生成，保持为空即可 -->
+                            <!-- 表头由 main.js 生成 -->
                         </thead>
                         <tbody id="lb-tbody">
-                            <!-- 表格内容会由 main.js 自动生成，保持为空即可 -->
+                            <!-- 内容由 main.js 生成 -->
                         </tbody>
                     </table>
                 </div>
@@ -261,7 +271,6 @@
         </main>
     </div>
     
-    <!-- 引入唯一的主逻辑 -->
     <script src="js/main.js"></script>
 </body>
 </html>

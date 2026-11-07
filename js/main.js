@@ -9,7 +9,7 @@ async function loadData() {
         // ================= 注入新的模型数据 =================
         const newModelsZh = [
             // qwen-audio-3.1-tts-next (绿色)
-            { Model: 'qwen-audio-3.1-tts-next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03 },
+            { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03 },
             
             // Ming-tiny 改为 yellow
             { Model: 'Ming-3.0-tts-tiny', Group: 'yellow', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1 },

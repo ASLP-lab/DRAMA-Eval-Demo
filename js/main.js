@@ -6,30 +6,24 @@ async function loadData() {
         // 1. 加载原有的 json 数据
         metricsData = await (await fetch('data/metrics.json')).json();
         
-        // ================= 注入新的模型数据 =================
+        // ================= 注入新的模型数据 (加入 isNew 标记) =================
         const newModelsZh = [
-            // qwen-audio-3.1-tts-next (绿色)
-            { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03 },
+            // Qwen-Audio-3.1-TTS-Next (规范化名称，加入 isNew)
+            { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03, isNew: true },
             
-            // Ming-tiny 改为 yellow
-            { Model: 'Ming-3.0-tts-tiny', Group: 'yellow', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1 },
-            { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2 },
-            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9 },
-            
-            // MOSS-TTS-2.0 改为 red (根据之前的截图，B1 补上了 32.5)
-            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.28, A2: 0.7977, B1: 32.5, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8 }
+            { Model: 'Ming-3.0-tts-tiny', Group: 'yellow', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1, isNew: true },
+            { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2, isNew: true },
+            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9, isNew: true },
+            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.28, A2: 0.7977, B1: 32.5, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8, isNew: true }
         ];
         const newModelsEn = [
-            // qwen-audio-3.1-tts-next (绿色)
-            { Model: 'qwen-audio-3.1-tts-next', Group: 'green', A1: 7.78, A2: 0.6296, B1: 44.07, B2: 39.85, B3: 42.72, C1: 42.79, C2: 36.06, C3: 36.54 },
+            // Qwen-Audio-3.1-TTS-Next (规范化名称，加入 isNew)
+            { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 7.78, A2: 0.6296, B1: 44.07, B2: 39.85, B3: 42.72, C1: 42.79, C2: 36.06, C3: 36.54, isNew: true },
             
-            // Ming-tiny 改为 yellow
-            { Model: 'Ming-3.0-tts-tiny', Group: 'yellow', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3 },
-            { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1 },
-            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4 },
-            
-            // MOSS-TTS-2.0 改为 red
-            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.87, A2: 0.7609, B1: null, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4 }
+            { Model: 'Ming-3.0-tts-tiny', Group: 'yellow', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3, isNew: true },
+            { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1, isNew: true },
+            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4, isNew: true },
+            { Model: 'MOSS-TTS-2.0', Group: 'red', A1: 4.87, A2: 0.7609, B1: null, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4, isNew: true }
         ];
 
         if (!metricsData) metricsData = {};
@@ -108,7 +102,14 @@ function renderLeaderboard() {
     data.forEach(row => {
         const tr = document.createElement('tr');
         tr.className = `bg-${row.Group}`;
-        let html = `<td>${row.Model}</td>`;
+        
+        // 判断是否为新模型，加上红色的 NEW 标签
+        let modelNameHtml = row.Model;
+        if (row.isNew) {
+            modelNameHtml += ` <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold; letter-spacing: 0.5px;">NEW</span>`;
+        }
+        
+        let html = `<td>${modelNameHtml}</td>`;
         ['A1', 'A2', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'].forEach(k => {
             let val = row[k];
             if (val === null || val === undefined) {
@@ -131,10 +132,13 @@ function sortTable(colIndex) {
     sortAsc[colIndex] = isAsc;
 
     rows.sort((a, b) => {
+        // 注意：因为第一列可能有 NEW 标签，直接用 innerText 可能会带出 NEW 字样，所以排序列 0 时做个截取
         let valA = a.children[colIndex].innerText.trim();
         let valB = b.children[colIndex].innerText.trim();
         
         if (colIndex === 0) {
+            valA = valA.replace('NEW', '').trim();
+            valB = valB.replace('NEW', '').trim();
             return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
         } else {
             let numA = parseFloat(valA) || (valA === '-' ? Infinity : -Infinity);
@@ -153,12 +157,18 @@ function initRadarModels() {
     if(!metricsData['zh']) return;
     const models = metricsData['zh'].map(d => d.Model);
     
-    container.innerHTML = models.map((m, i) => `
-        <label class="checkbox-label">
+    // 为雷达图复选框也加上 NEW 标签
+    container.innerHTML = models.map((m, i) => {
+        const modelInfo = metricsData['zh'].find(d => d.Model === m);
+        const isNew = modelInfo && modelInfo.isNew;
+        const newBadge = isNew ? `<span style="background:#ef4444; color:white; font-size:0.6rem; padding:1px 4px; border-radius:4px; margin-left:4px;">NEW</span>` : '';
+        return `
+        <label class="checkbox-label" style="display:flex; align-items:center; gap:4px; cursor:pointer;">
             <input type="checkbox" value="${m}" ${i<3?'checked':''} onchange="renderRadar()">
-            <span>${m}</span>
+            <span>${m}${newBadge}</span>
         </label>
-    `).join('');
+        `;
+    }).join('');
 
     radarChart = echarts.init(document.getElementById('radar-chart'));
     window.addEventListener('resize', () => radarChart.resize());
@@ -192,16 +202,21 @@ function renderRadar() {
         if (!row) return;
         let a1_inv = 10 - row.A1; 
         let vals = [a1_inv, row.A2, row.B1 || 0, row.B2 || 0, row.B3 || 0, row.C1 || 0, row.C2 || 0, row.C3 || 0];
+        
+        // 雷达图的图例名称加上 (New) 以便区分
+        let legendName = row.Model + (row.isNew ? ' (New)' : '');
+
         seriesData.push({
             value: vals,
-            name: m,
+            name: legendName, 
             areaStyle: { opacity: 0.15 },
             lineStyle: { width: 2 }
         });
     });
 
     radarChart.setOption({
-        legend: { top: 'top', data: selectedModels, textStyle: { fontFamily: 'Inter' } },
+        // 图例需要匹配 seriesData 里的名字
+        legend: { top: 'top', data: seriesData.map(d => d.name), textStyle: { fontFamily: 'Inter' } },
         tooltip: { trigger: 'item' },
         radar: {
             indicator: indicators,

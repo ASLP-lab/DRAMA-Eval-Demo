@@ -1,6 +1,7 @@
 let metricsData = {}, caseDataZH = {}, caseDataEN = {};
 let radarChart = null;
 
+
 async function loadData() {
     try {
         // 1. 加载原有的 json 数据

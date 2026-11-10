@@ -1,7 +1,6 @@
 let metricsData = {}, caseDataZH = {}, caseDataEN = {};
 let radarChart = null;
 
-
 async function loadData() {
     try {
         // 1. 加载原有的 json 数据
@@ -295,14 +294,18 @@ function renderCaseStudy() {
         if (!item) return;
 
         const modelAudioSrc = `data/model_audio/${model}/${lang}_${audio_utt}.wav`;
-        const gRes = item.reasoning[`${model}_global`] || {};
-        const lResList = item.reasoning[`${model}_local`]?.utterances || [];
+        
+        // 兼容性处理，避免 ?. 引发某些浏览器的语法错误
+        const reasoningObj = item.reasoning || {};
+        const gRes = reasoningObj[`${model}_global`] || {};
+        const lResObj = reasoningObj[`${model}_local`] || {};
+        const lResList = lResObj.utterances || [];
         
         function getMajorityWinner(list, key) {
             if (!Array.isArray(list) || list.length === 0) return '-';
             let counts = { "Model": 0, "GT": 0, "Tie": 0 };
             list.forEach(u => {
-                let w = u[key]?.final_winner;
+                const w = u[key] ? u[key].final_winner : null;
                 if (counts[w] !== undefined) counts[w]++;
             });
             let maxW = '-'; let maxC = -1;
@@ -315,27 +318,37 @@ function renderCaseStudy() {
         let b1 = getMajorityWinner(lResList, 'B1_Instruction_Following');
         let b2 = getMajorityWinner(lResList, 'B2_Prosody_Fluency');
         let b3 = getMajorityWinner(lResList, 'B3_Local_Expressiveness');
-        let c1 = gRes.C1_Interaction_Naturalness?.final_winner || '-';
-        let c2 = gRes.C2_Global_Flow?.final_winner || '-';
-        let c3 = gRes.C3_Scene_Immersion?.final_winner || '-';
+        
+        let c1 = (gRes.C1_Interaction_Naturalness && gRes.C1_Interaction_Naturalness.final_winner) || '-';
+        let c2 = (gRes.C2_Global_Flow && gRes.C2_Global_Flow.final_winner) || '-';
+        let c3 = (gRes.C3_Scene_Immersion && gRes.C3_Scene_Immersion.final_winner) || '-';
 
-        let localReasonHtml = lResList.map(u => `
+        let localReasonHtml = lResList.map(u => {
+            let b1Obj = u.B1_Instruction_Following || {};
+            let b2Obj = u.B2_Prosody_Fluency || {};
+            let b3Obj = u.B3_Local_Expressiveness || {};
+            return `
             <div class="reasoning-block">
                 <strong style="color:#0f172a; display:block; margin-bottom:5px;">Turn ${u.turn_num}</strong>
                 <div style="display:flex; flex-direction:column; gap:6px;">
-                    <div><span class="winner-tag ${getWinnerClass(u.B1_Instruction_Following?.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B1: ${u.B1_Instruction_Following?.final_winner || '-'}</span> ${u.B1_Instruction_Following?.reasoning || '-'}</div>
-                    <div><span class="winner-tag ${getWinnerClass(u.B2_Prosody_Fluency?.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B2: ${u.B2_Prosody_Fluency?.final_winner || '-'}</span> ${u.B2_Prosody_Fluency?.reasoning || '-'}</div>
-                    <div><span class="winner-tag ${getWinnerClass(u.B3_Local_Expressiveness?.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B3: ${u.B3_Local_Expressiveness?.final_winner || '-'}</span> ${u.B3_Local_Expressiveness?.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(b1Obj.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B1: ${b1Obj.final_winner || '-'}</span> ${b1Obj.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(b2Obj.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B2: ${b2Obj.final_winner || '-'}</span> ${b2Obj.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(b3Obj.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B3: ${b3Obj.final_winner || '-'}</span> ${b3Obj.reasoning || '-'}</div>
                 </div>
             </div>
-        `).join('');
+            `;
+        }).join('');
+
+        let c1Reason = (gRes.C1_Interaction_Naturalness && gRes.C1_Interaction_Naturalness.reasoning) || '-';
+        let c2Reason = (gRes.C2_Global_Flow && gRes.C2_Global_Flow.reasoning) || '-';
+        let c3Reason = (gRes.C3_Scene_Immersion && gRes.C3_Scene_Immersion.reasoning) || '-';
 
         let globalReasonHtml = `
             <div class="reasoning-block">
                 <div style="display:flex; flex-direction:column; gap:6px;">
-                    <div><span class="winner-tag ${getWinnerClass(c1)}" style="display:inline-block; width:auto; margin-right:5px;">C1: ${c1}</span> ${gRes.C1_Interaction_Naturalness?.reasoning || '-'}</div>
-                    <div><span class="winner-tag ${getWinnerClass(c2)}" style="display:inline-block; width:auto; margin-right:5px;">C2: ${c2}</span> ${gRes.C2_Global_Flow?.reasoning || '-'}</div>
-                    <div><span class="winner-tag ${getWinnerClass(c3)}" style="display:inline-block; width:auto; margin-right:5px;">C3: ${c3}</span> ${gRes.C3_Scene_Immersion?.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c1)}" style="display:inline-block; width:auto; margin-right:5px;">C1: ${c1}</span> ${c1Reason}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c2)}" style="display:inline-block; width:auto; margin-right:5px;">C2: ${c2}</span> ${c2Reason}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c3)}" style="display:inline-block; width:auto; margin-right:5px;">C3: ${c3}</span> ${c3Reason}</div>
                 </div>
             </div>
         `;

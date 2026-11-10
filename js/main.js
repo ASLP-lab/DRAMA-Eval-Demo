@@ -91,8 +91,12 @@ function renderLeaderboard() {
     data.forEach(d => {
         for (let k in best) {
             if (d[k] !== null && d[k] !== undefined) {
-                if (k === 'A1' && d[k] < best[k]) best[k] = d[k];
-                if (k !== 'A1' && d[k] > best[k]) best[k] = d[k];
+                // 强制转数字进行比较，防止部分 JSON 数据是字符串
+                let num = parseFloat(d[k]);
+                if (!isNaN(num)) {
+                    if (k === 'A1' && num < best[k]) best[k] = num;
+                    if (k !== 'A1' && num > best[k]) best[k] = num;
+                }
             }
         }
     });
@@ -111,7 +115,6 @@ function renderLeaderboard() {
         const tr = document.createElement('tr');
         tr.className = `bg-${row.Group}`;
         
-        // 判断是否为新模型，加上红色的 NEW 标签
         let modelNameHtml = row.Model;
         if (row.isNew) {
             modelNameHtml += ` <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold; letter-spacing: 0.5px;">NEW</span>`;
@@ -120,11 +123,13 @@ function renderLeaderboard() {
         let html = `<td>${modelNameHtml}</td>`;
         ['A1', 'A2', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3'].forEach(k => {
             let val = row[k];
-            if (val === null || val === undefined) {
+            if (val === null || val === undefined || val === '') {
                 html += `<td>-</td>`;
             } else {
-                let isBest = (k === 'A1' && val === best[k]) || (k !== 'A1' && val === best[k]);
-                html += `<td class="${isBest ? 'bold-best' : ''}">${val.toFixed(2)}</td>`;
+                // 强制转数字防止 toFixed 报错
+                let numVal = parseFloat(val);
+                let isBest = (k === 'A1' && numVal === best[k]) || (k !== 'A1' && numVal === best[k]);
+                html += `<td class="${isBest ? 'bold-best' : ''}">${numVal.toFixed(2)}</td>`;
             }
         });
         tr.innerHTML = html;
@@ -148,8 +153,11 @@ function sortTable(colIndex) {
             valB = valB.replace('NEW', '').trim();
             return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
         } else {
-            let numA = parseFloat(valA) || (valA === '-' ? Infinity : -Infinity);
-            let numB = parseFloat(valB) || (valB === '-' ? Infinity : -Infinity);
+            // 修复 parseFloat 结果为 0 时变成 Infinity 的 bug
+            let numA = parseFloat(valA);
+            let numB = parseFloat(valB);
+            if (isNaN(numA)) numA = (valA === '-' ? Infinity : -Infinity);
+            if (isNaN(numB)) numB = (valB === '-' ? Infinity : -Infinity);
             return isAsc ? numA - numB : numB - numA;
         }
     });
@@ -206,8 +214,21 @@ function renderRadar() {
     selectedModels.forEach(m => {
         const row = data.find(d => d.Model === m);
         if (!row) return;
-        let a1_inv = 10 - row.A1; 
-        let vals = [a1_inv, row.A2, row.B1 || 0, row.B2 || 0, row.B3 || 0, row.C1 || 0, row.C2 || 0, row.C3 || 0];
+        
+        // 防 NaN 报错
+        let a1 = row.A1 !== null && row.A1 !== undefined ? parseFloat(row.A1) : 0;
+        let a2 = row.A2 !== null && row.A2 !== undefined ? parseFloat(row.A2) : 0;
+        
+        let b1 = row.B1 !== null && row.B1 !== undefined ? parseFloat(row.B1) : 0;
+        let b2 = row.B2 !== null && row.B2 !== undefined ? parseFloat(row.B2) : 0;
+        let b3 = row.B3 !== null && row.B3 !== undefined ? parseFloat(row.B3) : 0;
+        
+        let c1 = row.C1 !== null && row.C1 !== undefined ? parseFloat(row.C1) : 0;
+        let c2 = row.C2 !== null && row.C2 !== undefined ? parseFloat(row.C2) : 0;
+        let c3 = row.C3 !== null && row.C3 !== undefined ? parseFloat(row.C3) : 0;
+
+        let a1_inv = a1 > 0 ? 10 - a1 : 0; 
+        let vals = [a1_inv, a2, b1, b2, b3, c1, c2, c3];
         
         let legendName = row.Model + (row.isNew ? ' (New)' : '');
 
@@ -247,7 +268,7 @@ function initCaseStudy() {
     if(!data) return;
     
     const firstModel = Object.keys(data)[0];
-    if (!firstModel || !data[firstModel]) return;
+    if (!firstModel || !data[firstModel] || !Array.isArray(data[firstModel])) return;
     
     const samples = data[firstModel];
     uttSel.innerHTML = samples.map((item, index) => 
@@ -264,30 +285,38 @@ function renderCaseStudy() {
     if(!data) return;
     
     const models = Object.keys(data);
+    if (models.length === 0) return;
     const firstModel = models[0];
-    const mainItem = data[firstModel].find(d => d.utt === utt);
+    if (!Array.isArray(data[firstModel])) return;
     
+    const mainItem = data[firstModel].find(d => d.utt === utt);
     if (!mainItem) return;
 
     document.getElementById('cs-bg').innerText = mainItem.context_background || "";
     let charsHtml = '';
-    for (let cname in mainItem.character) {
-        charsHtml += `<li><strong>${cname}</strong>: ${mainItem.character[cname].text_info}</li>`;
+    if (mainItem.character) {
+        for (let cname in mainItem.character) {
+            let charInfo = mainItem.character[cname] || {};
+            charsHtml += `<li><strong>${cname}</strong>: ${charInfo.text_info || ''}</li>`;
+        }
     }
     document.getElementById('cs-chars').innerHTML = charsHtml;
 
     const turnsDiv = document.getElementById('cs-turns');
     turnsDiv.innerHTML = '';
-    (mainItem.content || []).forEach(t => {
-        const tDiv = document.createElement('div');
-        tDiv.className = 'turn-item';
-        tDiv.innerHTML = `
-            <div class="turn-item-header">Turn ${t.turn_num} | ${t.speaker_info.speaker_name}</div>
-            <div class="turn-item-text">${t.text}</div>
-            <div class="turn-item-context"><strong>Local Context:</strong> ${t.context}</div>
-        `;
-        turnsDiv.appendChild(tDiv);
-    });
+    if (Array.isArray(mainItem.content)) {
+        mainItem.content.forEach(t => {
+            const tDiv = document.createElement('div');
+            tDiv.className = 'turn-item';
+            let speakerName = t.speaker_info ? t.speaker_info.speaker_name : 'Unknown';
+            tDiv.innerHTML = `
+                <div class="turn-item-header">Turn ${t.turn_num} | ${speakerName}</div>
+                <div class="turn-item-text">${t.text || ''}</div>
+                <div class="turn-item-context"><strong>Local Context:</strong> ${t.context || ''}</div>
+            `;
+            turnsDiv.appendChild(tDiv);
+        });
+    }
 
     const audio_utt = utt.replace(/^0+/, '') || '0';
     const audioGt = document.getElementById('cs-audio-gt');
@@ -298,6 +327,7 @@ function renderCaseStudy() {
     grid.innerHTML = '';
     
     models.forEach(model => {
+        if (!Array.isArray(data[model])) return;
         const item = data[model].find(d => d.utt === utt);
         if (!item) return;
 
@@ -306,13 +336,14 @@ function renderCaseStudy() {
         const reasoningObj = item.reasoning || {};
         const gRes = reasoningObj[`${model}_global`] || {};
         const lResObj = reasoningObj[`${model}_local`] || {};
-        const lResList = lResObj.utterances || [];
+        const lResList = Array.isArray(lResObj.utterances) ? lResObj.utterances : [];
         
         function getMajorityWinner(list, key) {
             if (!Array.isArray(list) || list.length === 0) return '-';
             let counts = { "Model": 0, "GT": 0, "Tie": 0 };
             list.forEach(u => {
-                const w = u[key] ? u[key].final_winner : null;
+                const resObj = u[key] || {};
+                const w = resObj.final_winner;
                 if (counts[w] !== undefined) counts[w]++;
             });
             let maxW = '-'; let maxC = -1;
@@ -326,9 +357,13 @@ function renderCaseStudy() {
         let b2 = getMajorityWinner(lResList, 'B2_Prosody_Fluency');
         let b3 = getMajorityWinner(lResList, 'B3_Local_Expressiveness');
         
-        let c1 = (gRes.C1_Interaction_Naturalness && gRes.C1_Interaction_Naturalness.final_winner) || '-';
-        let c2 = (gRes.C2_Global_Flow && gRes.C2_Global_Flow.final_winner) || '-';
-        let c3 = (gRes.C3_Scene_Immersion && gRes.C3_Scene_Immersion.final_winner) || '-';
+        let c1Res = gRes.C1_Interaction_Naturalness || {};
+        let c2Res = gRes.C2_Global_Flow || {};
+        let c3Res = gRes.C3_Scene_Immersion || {};
+        
+        let c1 = c1Res.final_winner || '-';
+        let c2 = c2Res.final_winner || '-';
+        let c3 = c3Res.final_winner || '-';
 
         let localReasonHtml = lResList.map(u => {
             let b1Obj = u.B1_Instruction_Following || {};
@@ -336,7 +371,7 @@ function renderCaseStudy() {
             let b3Obj = u.B3_Local_Expressiveness || {};
             return `
             <div class="reasoning-block">
-                <strong style="color:#0f172a; display:block; margin-bottom:5px;">Turn ${u.turn_num}</strong>
+                <strong style="color:#0f172a; display:block; margin-bottom:5px;">Turn ${u.turn_num || ''}</strong>
                 <div style="display:flex; flex-direction:column; gap:6px;">
                     <div><span class="winner-tag ${getWinnerClass(b1Obj.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B1: ${b1Obj.final_winner || '-'}</span> ${b1Obj.reasoning || '-'}</div>
                     <div><span class="winner-tag ${getWinnerClass(b2Obj.final_winner)}" style="display:inline-block; width:auto; margin-right:5px;">B2: ${b2Obj.final_winner || '-'}</span> ${b2Obj.reasoning || '-'}</div>
@@ -346,16 +381,12 @@ function renderCaseStudy() {
             `;
         }).join('');
 
-        let c1Reason = (gRes.C1_Interaction_Naturalness && gRes.C1_Interaction_Naturalness.reasoning) || '-';
-        let c2Reason = (gRes.C2_Global_Flow && gRes.C2_Global_Flow.reasoning) || '-';
-        let c3Reason = (gRes.C3_Scene_Immersion && gRes.C3_Scene_Immersion.reasoning) || '-';
-
         let globalReasonHtml = `
             <div class="reasoning-block">
                 <div style="display:flex; flex-direction:column; gap:6px;">
-                    <div><span class="winner-tag ${getWinnerClass(c1)}" style="display:inline-block; width:auto; margin-right:5px;">C1: ${c1}</span> ${c1Reason}</div>
-                    <div><span class="winner-tag ${getWinnerClass(c2)}" style="display:inline-block; width:auto; margin-right:5px;">C2: ${c2}</span> ${c2Reason}</div>
-                    <div><span class="winner-tag ${getWinnerClass(c3)}" style="display:inline-block; width:auto; margin-right:5px;">C3: ${c3}</span> ${c3Reason}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c1)}" style="display:inline-block; width:auto; margin-right:5px;">C1: ${c1}</span> ${c1Res.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c2)}" style="display:inline-block; width:auto; margin-right:5px;">C2: ${c2}</span> ${c2Res.reasoning || '-'}</div>
+                    <div><span class="winner-tag ${getWinnerClass(c3)}" style="display:inline-block; width:auto; margin-right:5px;">C3: ${c3}</span> ${c3Res.reasoning || '-'}</div>
                 </div>
             </div>
         `;

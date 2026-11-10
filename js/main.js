@@ -59,7 +59,6 @@ async function loadData() {
     }
 }
 
-// 左侧目录跟随高亮
 function initScrollSpy() {
     const sections = document.querySelectorAll('.section');
     const navLinks = document.querySelectorAll('.sidebar-nav a');
@@ -126,7 +125,6 @@ function renderLeaderboard() {
             if (val === null || val === undefined || val === '') {
                 html += `<td>-</td>`;
             } else {
-                // 强制转数字防止 toFixed 报错
                 let numVal = parseFloat(val);
                 let isBest = (k === 'A1' && numVal === best[k]) || (k !== 'A1' && numVal === best[k]);
                 html += `<td class="${isBest ? 'bold-best' : ''}">${numVal.toFixed(2)}</td>`;

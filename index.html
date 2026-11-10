@@ -10,21 +10,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Nunito:wght@700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* 添加颜色定义，供 main.js 动态渲染使用 */
-        .bg-green { background-color: #d1fae5 !important; }   /* Context-aware multi-speaker */
-        .bg-blue { background-color: #dbeafe !important; }    /* Single-speaker voice-design */
-        .bg-yellow { background-color: #fef9c3 !important; }  /* Single-speaker voice-control */
-        .bg-red { background-color: #fee2e2 !important; }     /* Multi-speaker TTS */
-
-        /* 解决表格左右滚动问题，让列宽自适应铺满一屏 */
-        .table-wrapper { width: 100%; overflow-x: auto; }
-        #lb-table { width: 100%; font-size: 0.85rem; table-layout: auto; }
-        #lb-table td, #lb-table th { padding: 10px 5px !important; text-align: center; }
-        #lb-table td:first-child, #lb-table th:first-child { text-align: left; padding-left: 15px !important; font-weight: 600; }
+        /* 颜色定义 */
+        .bg-green { background-color: #d1fae5 !important; }   
+        .bg-blue { background-color: #dbeafe !important; }    
+        .bg-yellow { background-color: #fef9c3 !important; }  
+        .bg-red { background-color: #fee2e2 !important; }     
+        
+        /* 表格样式自适应 */
+        .table-wrapper { width: 100%; overflow-x: auto; margin-bottom: 20px;}
+        #lb-table, #inference-table { width: 100%; font-size: 0.85rem; table-layout: auto; border-collapse: collapse; }
+        #lb-table td, #lb-table th, #inference-table td, #inference-table th { padding: 12px 8px !important; text-align: center; border-bottom: 1px solid #e2e8f0; }
+        #lb-table td:first-child, #lb-table th:first-child, #inference-table td:first-child, #inference-table th:first-child { text-align: left; padding-left: 15px !important; font-weight: 600; }
         
         /* 表头悬停效果 */
-        #lb-thead th { cursor: pointer; white-space: nowrap; }
-        #lb-thead th:hover { background-color: #e2e8f0; }
+        #lb-thead th, #inference-table th { cursor: default; white-space: nowrap; background-color: #f8fafc; font-weight: 700; color: #1e293b; }
+        
+        /* API 和 Local 标签样式 */
+        .tag-api { background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+        .tag-local { background: #94a3b8; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -35,13 +38,13 @@
             <a href="#overview">Overview</a>
             <a href="#radar">Radar Chart</a>
             <a href="#leaderboard">Leaderboard</a>
+            <a href="#inference">Inference Setup</a>
             <a href="#case">Case Study</a>
             <a href="#contact">Contact Us</a>
         </nav>
     </header>
 
     <div class="layout-container">
-        <!-- 左侧悬浮侧边栏 -->
         <aside class="left-sidebar">
             <div class="sidebar-inner">
                 <p class="sidebar-title">ON THIS PAGE</p>
@@ -49,14 +52,15 @@
                     <a href="#overview" class="active">Overview</a>
                     <a href="#radar">Radar Chart</a>
                     <a href="#leaderboard">Leaderboard</a>
+                    <a href="#inference">Inference Setup</a>
                     <a href="#case">Case Study</a>
                     <a href="#contact">Contact Us</a>
                 </nav>
             </div>
         </aside>
 
-        <!-- 右侧主内容区 -->
         <main class="main-content">
+            <!-- ================= Overview ================= -->
             <section id="overview" class="section">
                 <h1 class="page-title">DRAMA-Eval: A Benchmark for Context-Aware, Multi-Turn, Multi-Speaker Speech Generation</h1>
                 
@@ -182,6 +186,7 @@
                 </div>
             </section>
 
+            <!-- ================= Leaderboard ================= -->
             <section id="leaderboard" class="section">
                 <h1 class="page-title">Leaderboard</h1>
                 <div class="desc-text" style="margin-bottom: 30px;">
@@ -238,6 +243,128 @@
                 </div>
             </section>
 
+            <!-- ================= Inference Setup ================= -->
+            <section id="inference" class="section">
+                <h1 class="page-title">Model Inference Setup</h1>
+                <div class="desc-text" style="margin-bottom: 30px;">
+                    <p>This table summarizes the input components and deployment methods used during the evaluation of each model. Models are evaluated either by deploying locally or by calling their official APIs. We check the components explicitly provided to the model during inference.</p>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="inference-table">
+                        <thead>
+                            <tr>
+                                <th>Model</th>
+                                <th>Deployment</th>
+                                <th>Target Text</th>
+                                <th>Global Context</th>
+                                <th>Character Profile</th>
+                                <th>Reference Audio</th>
+                                <th>Local Context</th>
+                                <th>Prompt Audio</th>
+                                <th>Context Concat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ===== Green: API ===== -->
+                            <tr class="bg-green">
+                                <td>Qwen-Audio-3.1-TTS-Next <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
+                                <td><span class="tag-api">API</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-green">
+                                <td>SeedAudio</td>
+                                <td><span class="tag-api">API</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-green">
+                                <td>StepAudio 3 Gen</td>
+                                <td><span class="tag-api">API</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+
+                            <!-- ===== Blue: Local ===== -->
+                            <tr class="bg-blue">
+                                <td>MiniMax-H3</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-blue">
+                                <td>Qwen3-TTS (VD)</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-blue">
+                                <td>Ming-3.0-tts-0.5B <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+
+                            <!-- ===== Yellow: Local ===== -->
+                            <tr class="bg-yellow">
+                                <td>FireRedTTS3</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-yellow">
+                                <td>VoxCPM2</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-yellow">
+                                <td>MiMo-Audio-7B</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-yellow">
+                                <td>Fun-CosyVoice3-0.5B <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+
+                            <!-- ===== Red: Local & API ===== -->
+                            <tr class="bg-red">
+                                <td>MOSS-TTSD</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>SoulX-Podcast</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>VibeVoice</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>FireRedTTS2</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>Higgs Audio V2</td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>Ming-3.0-tts-tiny <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
+                                <td><span class="tag-local">Local</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                            <tr class="bg-red">
+                                <td>MOSS-TTS-2.0 Preview <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
+                                <td><span class="tag-api">API</span></td>
+                                <td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size: 0.9rem; color: #64748b; margin-top: 15px;"><strong>Note:</strong> "Context Concat" means whether the global and local context are concatenated into the target text before input to the model.</p>
+            </section>
+
+            <!-- ================= Case Study ================= -->
             <section id="case" class="section">
                 <h1 class="page-title">Case Study</h1>
                 
@@ -254,9 +381,7 @@
                     <select id="case-utt" onchange="renderCaseStudy()"></select>
                 </div>
 
-                <!-- 双栏布局 -->
                 <div class="case-layout">
-                    <!-- 左栏：剧本与 GT -->
                     <aside class="case-sidebar">
                         <div class="script-block bg-context">
                             <h4>Global Context</h4>
@@ -278,15 +403,13 @@
                             <div class="turns-scroll-container" id="cs-turns"></div>
                         </div>
                     </aside>
-
-                    <!-- 右栏：模型网格 -->
                     <main class="case-main">
                         <div class="models-grid" id="models-grid"></div>
                     </main>
                 </div>
             </section>
 
-            <!-- Contact / Community 模块 -->
+            <!-- ================= Contact / Community ================= -->
             <section id="contact" class="section" style="margin-top: 60px; margin-bottom: 40px; text-align: center;">
                 <h1 class="page-title">Join Our Community</h1>
                 
@@ -295,8 +418,7 @@
                         Scan the QR code below with WeChat to add our assistant. We will invite you to the <strong>DRAMA-Eval Discussion Group</strong>.
                     </p>
                     
-                    <!-- 二维码图片 -->
-                    <img src="assets/wechat_qr.png" alt="WeChat QR Code" style="width: 200px; height: 200px; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
+                    <img src="https://github.com/user-attachments/assets/75d575a9-d515-4280-92c9-b26258191380" alt="WeChat QR Code" style="width: 200px; height: 200px; object-fit: contain; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px;">
                     
                     <div style="font-size: 0.95rem; color: #64748b; line-height: 1.8;">
                         <p style="margin-bottom: 8px;">If the QR code expires, please contact us via email:</p>

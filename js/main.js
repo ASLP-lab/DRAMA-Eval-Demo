@@ -1,5 +1,6 @@
 let metricsData = {}, caseDataZH = {}, caseDataEN = {};
 let radarChart = null;
+
 async function loadData() {
     try {
         // 1. 加载原有的 json 数据
@@ -10,8 +11,8 @@ async function loadData() {
             // Qwen-Audio-3.1-TTS-Next (绿色)
             { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03, isNew: true },
             
-            // Ming-3.0-tts-tiny 改为粉色 (pink)
-            { Model: 'Ming-3.0-tts-tiny', Group: 'pink', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1, isNew: true },
+            // Ming-3.0-tts-tiny 改为红色 (red)
+            { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1, isNew: true },
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2, isNew: true },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9, isNew: true }
         ];
@@ -19,8 +20,8 @@ async function loadData() {
             // Qwen-Audio-3.1-TTS-Next (绿色)
             { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 7.78, A2: 0.6296, B1: 44.07, B2: 39.85, B3: 42.72, C1: 42.79, C2: 36.06, C3: 36.54, isNew: true },
             
-            // Ming-3.0-tts-tiny 改为粉色 (pink)
-            { Model: 'Ming-3.0-tts-tiny', Group: 'pink', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3, isNew: true },
+            // Ming-3.0-tts-tiny 改为红色 (red)
+            { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3, isNew: true },
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1, isNew: true },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4, isNew: true }
         ];
@@ -32,8 +33,8 @@ async function loadData() {
         metricsData['zh'] = metricsData['zh'].concat(newModelsZh);
         metricsData['en'] = metricsData['en'].concat(newModelsEn);
 
-        // 按 Group 排序，确保相同颜色的模型紧挨在一起（绿->蓝->粉->黄->红）
-        const groupOrder = { 'green': 1, 'blue': 2, 'pink': 3, 'yellow': 4, 'red': 5 };
+        // 按 Group 排序，确保相同颜色的模型紧挨在一起（绿->蓝->黄->红）
+        const groupOrder = { 'green': 1, 'blue': 2, 'yellow': 3, 'red': 4 };
         metricsData['zh'].sort((a, b) => (groupOrder[a.Group] || 9) - (groupOrder[b.Group] || 9));
         metricsData['en'].sort((a, b) => (groupOrder[a.Group] || 9) - (groupOrder[b.Group] || 9));
         // ====================================================

@@ -1,5 +1,6 @@
 let metricsData = {}, caseDataZH = {}, caseDataEN = {};
 let radarChart = null;
+
 async function loadData() {
     try {
         // 1. 加载原有的 json 数据
@@ -12,8 +13,12 @@ async function loadData() {
             
             // Ming-3.0-tts-tiny 改为红色 (red)
             { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1, isNew: true },
+            
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2, isNew: true },
-            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9, isNew: true }
+            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9, isNew: true },
+            
+            // MOSS-TTS-2.0 Preview (红色，B1 为空)
+            { Model: 'MOSS-TTS-2.0 Preview', Group: 'red', A1: 4.28, A2: 0.7977, B1: null, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8, isNew: true }
         ];
         const newModelsEn = [
             // Qwen-Audio-3.1-TTS-Next (绿色)
@@ -21,8 +26,12 @@ async function loadData() {
             
             // Ming-3.0-tts-tiny 改为红色 (red)
             { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3, isNew: true },
+            
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1, isNew: true },
-            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4, isNew: true }
+            { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4, isNew: true },
+            
+            // MOSS-TTS-2.0 Preview (红色，B1 为空)
+            { Model: 'MOSS-TTS-2.0 Preview', Group: 'red', A1: 4.87, A2: 0.7609, B1: null, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4, isNew: true }
         ];
 
         if (!metricsData) metricsData = {};
@@ -81,7 +90,7 @@ function renderLeaderboard() {
     let best = { A1: Infinity, A2: -Infinity, B1: -Infinity, B2: -Infinity, B3: -Infinity, C1: -Infinity, C2: -Infinity, C3: -Infinity };
     data.forEach(d => {
         for (let k in best) {
-            if (d[k] !== null) {
+            if (d[k] !== null && d[k] !== undefined) {
                 if (k === 'A1' && d[k] < best[k]) best[k] = d[k];
                 if (k !== 'A1' && d[k] > best[k]) best[k] = d[k];
             }
@@ -294,7 +303,6 @@ function renderCaseStudy() {
 
         const modelAudioSrc = `data/model_audio/${model}/${lang}_${audio_utt}.wav`;
         
-        // 兼容性处理，避免 ?. 引发某些浏览器的语法错误
         const reasoningObj = item.reasoning || {};
         const gRes = reasoningObj[`${model}_global`] || {};
         const lResObj = reasoningObj[`${model}_local`] || {};

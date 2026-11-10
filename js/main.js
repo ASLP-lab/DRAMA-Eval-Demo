@@ -8,29 +8,17 @@ async function loadData() {
         
         // ================= 注入新的模型数据 (加入 isNew 标记) =================
         const newModelsZh = [
-            // Qwen-Audio-3.1-TTS-Next (绿色)
             { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 5.79, A2: 0.6952, B1: 43.07, B2: 39.46, B3: 42.39, C1: 46.94, C2: 41.44, C3: 43.03, isNew: true },
-            
-            // Ming-3.0-tts-tiny 改为红色 (red)
             { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 4.67, A2: 0.7401, B1: null, B2: 49.5, B3: 29.6, C1: 33.9, C2: 31.3, C3: 27.1, isNew: true },
-            
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 2.55, A2: 0.5249, B1: 43.5, B2: 55.6, B3: 41.2, C1: 39.7, C2: 31.7, C3: 30.2, isNew: true },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 2.98, A2: 0.7556, B1: 50.2, B2: 48.2, B3: 50.6, C1: 42.6, C2: 38.8, C3: 36.9, isNew: true },
-            
-            // MOSS-TTS-2.0 Preview (红色，B1 为空)
             { Model: 'MOSS-TTS-2.0 Preview', Group: 'red', A1: 4.28, A2: 0.7977, B1: null, B2: 44.5, B3: 26.0, C1: 39.6, C2: 38.7, C3: 34.8, isNew: true }
         ];
         const newModelsEn = [
-            // Qwen-Audio-3.1-TTS-Next (绿色)
             { Model: 'Qwen-Audio-3.1-TTS-Next', Group: 'green', A1: 7.78, A2: 0.6296, B1: 44.07, B2: 39.85, B3: 42.72, C1: 42.79, C2: 36.06, C3: 36.54, isNew: true },
-            
-            // Ming-3.0-tts-tiny 改为红色 (red)
             { Model: 'Ming-3.0-tts-tiny', Group: 'red', A1: 7.64, A2: 0.7165, B1: null, B2: 39.0, B3: 14.4, C1: 26.1, C2: 13.3, C3: 9.3, isNew: true },
-            
             { Model: 'Ming-3.0-tts-0.5B', Group: 'blue', A1: 4.13, A2: 0.3573, B1: 34.5, B2: 48.6, B3: 28.8, C1: 37.6, C2: 31.3, C3: 30.1, isNew: true },
             { Model: 'Fun-CosyVoice3-0.5B', Group: 'yellow', A1: 4.31, A2: 0.6968, B1: 31.6, B2: 38.1, B3: 22.4, C1: 29.6, C2: 19.1, C3: 15.4, isNew: true },
-            
-            // MOSS-TTS-2.0 Preview (红色，B1 为空)
             { Model: 'MOSS-TTS-2.0 Preview', Group: 'red', A1: 4.87, A2: 0.7609, B1: null, B2: 36.8, B3: 17.0, C1: 34.2, C2: 31.7, C3: 26.4, isNew: true }
         ];
 
@@ -53,24 +41,42 @@ async function loadData() {
         renderLeaderboard();
         initRadarModels();
         initCaseStudy();
-        initScrollSpy();
+        initScrollSpy(); // 初始化更新后的滚动监听
     } catch (e) {
         console.error("Data loading failed:", e);
     }
 }
 
+// ================= 修复后的左侧目录跟随高亮 =================
 function initScrollSpy() {
-    const sections = document.querySelectorAll('.section');
     const navLinks = document.querySelectorAll('.sidebar-nav a');
+    
+    // 动态获取导航栏里配置的所有对应的 DOM 元素
+    const targets = Array.from(navLinks).map(link => {
+        const id = link.getAttribute('href').substring(1);
+        return document.getElementById(id);
+    }).filter(el => el !== null);
+
     window.addEventListener('scroll', () => {
         let current = '';
-        sections.forEach(section => {
-            const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
-            if (scrollY >= (sectionTop - sectionHeight / 3)) {
-                current = section.getAttribute('id');
-            }
-        });
+        // 设置偏移量，让高亮稍微提前一点触发，体验更好
+        const scrollPos = window.scrollY + 150; 
+
+        // 判断是否已经滚动到了页面最底部
+        const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
+
+        if (isBottom) {
+            // 如果到了页面最底端，强制高亮最后一个 Contact Us
+            current = targets[targets.length - 1].id;
+        } else {
+            // 否则正常遍历计算当前位置
+            targets.forEach(target => {
+                if (target.offsetTop <= scrollPos) {
+                    current = target.id;
+                }
+            });
+        }
+
         navLinks.forEach(link => {
             link.classList.remove('active');
             if (link.getAttribute('href').substring(1) === current) {
@@ -79,6 +85,7 @@ function initScrollSpy() {
         });
     });
 }
+// ===============================================================
 
 // ================= Leaderboard =================
 function renderLeaderboard() {
@@ -90,7 +97,6 @@ function renderLeaderboard() {
     data.forEach(d => {
         for (let k in best) {
             if (d[k] !== null && d[k] !== undefined) {
-                // 强制转数字进行比较，防止部分 JSON 数据是字符串
                 let num = parseFloat(d[k]);
                 if (!isNaN(num)) {
                     if (k === 'A1' && num < best[k]) best[k] = num;
@@ -151,7 +157,6 @@ function sortTable(colIndex) {
             valB = valB.replace('NEW', '').trim();
             return isAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
         } else {
-            // 修复 parseFloat 结果为 0 时变成 Infinity 的 bug
             let numA = parseFloat(valA);
             let numB = parseFloat(valB);
             if (isNaN(numA)) numA = (valA === '-' ? Infinity : -Infinity);
@@ -213,7 +218,6 @@ function renderRadar() {
         const row = data.find(d => d.Model === m);
         if (!row) return;
         
-        // 防 NaN 报错
         let a1 = row.A1 !== null && row.A1 !== undefined ? parseFloat(row.A1) : 0;
         let a2 = row.A2 !== null && row.A2 !== undefined ? parseFloat(row.A2) : 0;
         

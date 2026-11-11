@@ -3,7 +3,7 @@ let radarChart = null;
 
 async function loadData() {
     try {
-        // 1. 加载原有的 json 数据
+        // 1. 加载排行榜数据
         metricsData = await (await fetch('data/metrics.json')).json();
         
         // ================= 注入新模型数据 =================
@@ -37,7 +37,7 @@ async function loadData() {
             'MOSS-TTSD': 'red', 'SoulX-Podcast': 'red', 'VibeVoice': 'red', 'FireRedTTS2': 'red', 'Higgs Audio V2': 'red', 'Ming-3.0-tts-tiny': 'red', 'MOSS-TTS-2.0 Preview': 'red'
         };
         
-        // 严格按照论文表格+新模型垫底的顺序
+        // 严格顺序：论文原有 -> 新加垫底
         const modelSortOrder = {
             'SeedAudio': 1, 'StepAudio 3 Gen': 2, 'Qwen-Audio-3.1-TTS-Next': 3,
             'MiniMax-H3': 4, 'Qwen3-TTS (VD)': 5, 'FireRedTTS3': 6, 'Ming-3.0-tts-0.5B': 7,
@@ -51,16 +51,26 @@ async function loadData() {
         metricsData['zh'].sort((a, b) => (modelSortOrder[a.Model] || 99) - (modelSortOrder[b.Model] || 99));
         metricsData['en'].sort((a, b) => (modelSortOrder[a.Model] || 99) - (modelSortOrder[b.Model] || 99));
 
+    } catch (e) {
+        console.error("Metrics data loading failed:", e);
+    }
+
+    // 2. 渲染排行榜和雷达图
+    renderLeaderboard();
+    initRadarModels();
+
+    // 3. 加载 Case Study 数据（独立 try-catch 防止崩溃）
+    try {
         caseDataZH = await (await fetch('data/case_data_zh.json')).json();
         caseDataEN = await (await fetch('data/case_data_en.json')).json();
-
-        renderLeaderboard();
-        initRadarModels();
         initCaseStudy();
-        initScrollSpy();
     } catch (e) {
-        console.error("Data loading failed:", e);
+        console.warn("Case Study data failed to load. Please check file paths.", e);
+        document.getElementById('case-utt').innerHTML = '<option value="">数据加载失败，请检查 data 目录</option>';
     }
+
+    // 4. 初始化滚动监听
+    initScrollSpy();
 }
 
 // 左侧目录跟随高亮
@@ -269,7 +279,7 @@ function renderRadar() {
     }, true);
 }
 
-// ================= Case Study =================
+// ================= Case Study (原封不动) =================
 function initCaseStudy() {
     const lang = document.getElementById('case-lang').value;
     const data = lang === 'zh' ? caseDataZH : caseDataEN;

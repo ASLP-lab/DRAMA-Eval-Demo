@@ -68,7 +68,7 @@ function initScrollSpy() {
     const navLinks = document.querySelectorAll('.sidebar-nav a');
     window.addEventListener('scroll', () => {
         let current = '';
-        const scrollPos = window.scrollY + 150; 
+        const scrollPos = window.scrollY + 200; 
         const isBottom = Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight;
 
         if (isBottom) {
@@ -83,7 +83,7 @@ function initScrollSpy() {
 
         navLinks.forEach(link => {
             link.classList.remove('active');
-            if (link.getAttribute('href').substring(1) === current) {
+            if (link.getAttribute('href') === '#' + current) {
                 link.classList.add('active');
             }
         });
@@ -99,7 +99,7 @@ function renderLeaderboard() {
     let best = { A1: Infinity, A2: -Infinity, B1: -Infinity, B2: -Infinity, B3: -Infinity, C1: -Infinity, C2: -Infinity, C3: -Infinity };
     data.forEach(d => {
         for (let k in best) {
-            if (d[k] !== null && d[k] !== undefined) {
+            if (d[k] !== null && d[k] !== undefined && d[k] !== '') {
                 let num = parseFloat(d[k]);
                 if (!isNaN(num)) {
                     if (k === 'A1' && num < best[k]) best[k] = num;
@@ -162,8 +162,14 @@ function sortTable(colIndex) {
         } else {
             let numA = parseFloat(valA);
             let numB = parseFloat(valB);
-            if (isNaN(numA)) numA = (valA === '-' ? Infinity : -Infinity);
-            if (isNaN(numB)) numB = (valB === '-' ? Infinity : -Infinity);
+            // 处理非数字（如横杠）
+            let isNaN_A = isNaN(numA);
+            let isNaN_B = isNaN(numB);
+            
+            if (isNaN_A && isNaN_B) return 0;
+            if (isNaN_A) return isAsc ? 1 : -1; // 横杠永远在最后
+            if (isNaN_B) return isAsc ? -1 : 1;
+            
             return isAsc ? numA - numB : numB - numA;
         }
     });
@@ -230,6 +236,7 @@ function renderRadar() {
         let c2 = row.C2 !== null && row.C2 !== undefined ? parseFloat(row.C2) : 0;
         let c3 = row.C3 !== null && row.C3 !== undefined ? parseFloat(row.C3) : 0;
 
+        // A1 反转，缺失值不参与反转
         let a1_inv = a1 > 0 ? 10 - a1 : 0; 
         let vals = [a1_inv, a2, b1, b2, b3, c1, c2, c3];
         

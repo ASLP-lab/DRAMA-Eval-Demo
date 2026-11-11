@@ -33,9 +33,9 @@
         .tag-api { background: #3b82f6; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
         .tag-local { background: #94a3b8; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
         
-        /* 勾和横杠的样式 */
-        .check-yes { color: #10b981; font-weight: bold; font-size: 1.1rem; }
-        .check-no { color: #94a3b8; font-weight: bold; }
+        /* 勾和横杠的样式（强制使用系统无衬线字体确保符号正确） */
+        .check-yes { color: #10b981; font-weight: bold; font-size: 1.2rem; font-family: Arial, sans-serif; }
+        .check-no { color: #64748b; font-weight: bold; font-size: 1.2rem; font-family: Arial, sans-serif; }
     </style>
 </head>
 <body>
@@ -257,7 +257,7 @@
             <section id="inference" class="section">
                 <h1 class="page-title">Model Inference Setup</h1>
                 <div class="desc-text" style="margin-bottom: 30px;">
-                    <p>This table summarizes the input components and deployment methods used during the evaluation of each model. Models are evaluated either by deploying locally or by calling their official APIs. We check the components explicitly provided to the model during inference. Please note that blanks are represented as <strong>-</strong>.</p>
+                    <p>This table summarizes the input components and deployment methods used during the evaluation of each model. Models are evaluated either by deploying locally or by calling their official APIs. Please note that missing inputs are marked with a dash <strong>-</strong>.</p>
                 </div>
 
                 <div class="table-wrapper">
@@ -280,21 +280,21 @@
                             <tr class="bg-green">
                                 <td>Qwen-Audio-3.1-TTS-Next <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
                                 <td><span class="tag-api">API</span></td>
-                                <td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>global_context + text_info + negative_prompt + local_context + text</td>
                                 <td>不全是（仅超长时拼接，一般情况下一次合成）</td>
                             </tr>
                             <tr class="bg-green">
                                 <td>SeedAudio</td>
                                 <td><span class="tag-api">API</span></td>
-                                <td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>全部输入</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-green">
                                 <td>StepAudio 3 Gen</td>
                                 <td><span class="tag-api">API</span></td>
-                                <td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>global_context + text_info + local_context + text</td>
                                 <td>否（仅超长数据切块拼接）</td>
                             </tr>
@@ -303,21 +303,21 @@
                             <tr class="bg-blue">
                                 <td>MiniMax-H3</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>text + character[spk].text_info + local_context</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-blue">
                                 <td>Qwen3-TTS (VD)</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>character[spk].text_info + local_context + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-blue">
                                 <td>Ming-3.0-tts-0.5B <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>text_info + local_context + text</td>
                                 <td>是</td>
                             </tr>
@@ -326,35 +326,35 @@
                             <tr class="bg-yellow">
                                 <td>FireRedTTS3</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>character[spk].text_info + local_context + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-yellow">
                                 <td>VoxCPM2</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>text + prompt_wav + text_info + local_context</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-yellow">
                                 <td>MiMo-Audio-7B</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>prompt_wav + text_info + local_context + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-yellow">
                                 <td>Fun-CosyVoice3-0.5B <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>prompt_wav + local_context + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-yellow">
                                 <td>MOSS-VoiceGenerator</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td>
                                 <td>local_context + text</td>
                                 <td>是</td>
                             </tr>
@@ -363,56 +363,56 @@
                             <tr class="bg-red">
                                 <td>MOSS-TTSD</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>SoulX-Podcast</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>VibeVoice</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + text</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>FireRedTTS2</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>Higgs Audio V2</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>否</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>F5-TTS</td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>Ming-3.0-tts-tiny <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
                                 <td><span class="tag-local">Local</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + prompt_text + text</td>
                                 <td>是</td>
                             </tr>
                             <tr class="bg-red">
                                 <td>MOSS-TTS-2.0 Preview <span style="background-color: #ef4444; color: white; font-size: 0.65rem; padding: 2px 6px; border-radius: 10px; margin-left: 8px; vertical-align: middle; font-weight: bold;">NEW</span></td>
                                 <td><span class="tag-api">API</span></td>
-                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✓</td><td class="check-yes">✓</td><td class="check-no">-</td>
+                                <td class="check-no">-</td><td class="check-no">-</td><td class="check-yes">✔</td><td class="check-yes">✔</td><td class="check-no">-</td>
                                 <td>prompt_wav + text</td>
                                 <td>否</td>
                             </tr>

@@ -29,26 +29,27 @@ async function loadData() {
         metricsData['zh'] = metricsData['zh'].concat(newModelsZh);
         metricsData['en'] = metricsData['en'].concat(newModelsEn);
 
-        // ================= 强制规范所有模型的颜色（包含以前的） =================
+        // ================= 强制规范颜色和指定严格顺序 =================
         const modelGroups = {
-            // 绿色：商业模型
             'Qwen-Audio-3.1-TTS-Next': 'green', 'SeedAudio': 'green', 'StepAudio 3 Gen': 'green',
-            // 蓝色：没给 prompt wav 的 instruct tts
             'MiniMax-H3': 'blue', 'Qwen3-TTS (VD)': 'blue', 'FireRedTTS3': 'blue', 'Ming-3.0-tts-0.5B': 'blue',
-            // 黄色：给了 prompt wav 的 instruct tts
             'VoxCPM2': 'yellow', 'MiMo-Audio-7B': 'yellow', 'Fun-CosyVoice3-0.5B': 'yellow',
-            // 红色：博客模型
-            'MOSS-TTSD': 'red', 'SoulX-Podcast': 'red', 'VibeVoice': 'red', 'FireRedTTS2': 'red', 'Higgs Audio V2': 'red', 
-            'Ming-3.0-tts-tiny': 'red', 'MOSS-TTS-2.0 Preview': 'red'
+            'MOSS-TTSD': 'red', 'SoulX-Podcast': 'red', 'VibeVoice': 'red', 'FireRedTTS2': 'red', 'Higgs Audio V2': 'red', 'Ming-3.0-tts-tiny': 'red', 'MOSS-TTS-2.0 Preview': 'red'
+        };
+        
+        // 严格按照论文表格+新模型垫底的顺序
+        const modelSortOrder = {
+            'SeedAudio': 1, 'StepAudio 3 Gen': 2, 'Qwen-Audio-3.1-TTS-Next': 3,
+            'MiniMax-H3': 4, 'Qwen3-TTS (VD)': 5, 'FireRedTTS3': 6, 'Ming-3.0-tts-0.5B': 7,
+            'VoxCPM2': 8, 'MiMo-Audio-7B': 9, 'Fun-CosyVoice3-0.5B': 10,
+            'MOSS-TTSD': 11, 'SoulX-Podcast': 12, 'VibeVoice': 13, 'FireRedTTS2': 14, 'Higgs Audio V2': 15, 'Ming-3.0-tts-tiny': 16, 'MOSS-TTS-2.0 Preview': 17
         };
         
         metricsData['zh'].forEach(d => { if (modelGroups[d.Model]) d.Group = modelGroups[d.Model]; });
         metricsData['en'].forEach(d => { if (modelGroups[d.Model]) d.Group = modelGroups[d.Model]; });
 
-        // 排序：绿->蓝->黄->红
-        const groupOrder = { 'green': 1, 'blue': 2, 'yellow': 3, 'red': 4 };
-        metricsData['zh'].sort((a, b) => (groupOrder[a.Group] || 9) - (groupOrder[b.Group] || 9));
-        metricsData['en'].sort((a, b) => (groupOrder[a.Group] || 9) - (groupOrder[b.Group] || 9));
+        metricsData['zh'].sort((a, b) => (modelSortOrder[a.Model] || 99) - (modelSortOrder[b.Model] || 99));
+        metricsData['en'].sort((a, b) => (modelSortOrder[a.Model] || 99) - (modelSortOrder[b.Model] || 99));
 
         caseDataZH = await (await fetch('data/case_data_zh.json')).json();
         caseDataEN = await (await fetch('data/case_data_en.json')).json();
@@ -162,12 +163,11 @@ function sortTable(colIndex) {
         } else {
             let numA = parseFloat(valA);
             let numB = parseFloat(valB);
-            // 处理非数字（如横杠）
             let isNaN_A = isNaN(numA);
             let isNaN_B = isNaN(numB);
             
             if (isNaN_A && isNaN_B) return 0;
-            if (isNaN_A) return isAsc ? 1 : -1; // 横杠永远在最后
+            if (isNaN_A) return isAsc ? 1 : -1; 
             if (isNaN_B) return isAsc ? -1 : 1;
             
             return isAsc ? numA - numB : numB - numA;
@@ -236,7 +236,6 @@ function renderRadar() {
         let c2 = row.C2 !== null && row.C2 !== undefined ? parseFloat(row.C2) : 0;
         let c3 = row.C3 !== null && row.C3 !== undefined ? parseFloat(row.C3) : 0;
 
-        // A1 反转，缺失值不参与反转
         let a1_inv = a1 > 0 ? 10 - a1 : 0; 
         let vals = [a1_inv, a2, b1, b2, b3, c1, c2, c3];
         
